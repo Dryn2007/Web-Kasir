@@ -43,19 +43,30 @@
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="px-4 py-3">
-                                        @if($order->status == 'pending')
-                                            <a href="{{ route('payment.simulation', $order->id) }}"
-                                                class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition">
-                                                Bayar Sekarang
-                                            </a>
-                                        @else
-                                            <a href="{{ route('orders.show', $order->id) }}"
-                                                class="text-gray-600 hover:text-gray-900 border border-gray-300 px-4 py-2 rounded text-sm">
-                                                Lihat Detail
-                                            </a>
-                                        @endif
-                                    </td>
+                                <td class="px-4 py-3 flex gap-2">
+                                    @if($order->status == 'pending')
+
+                                        <a href="{{ route('payment.simulation', $order->id) }}"
+                                            class="bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700 transition">
+                                            Bayar
+                                        </a>
+
+                                        <form action="{{ route('orders.cancel', $order->id) }}" method="POST"
+                                            onsubmit="return confirm('Yakin batalkan pesanan?');">
+                                            @csrf
+                                            <button type="submit"
+                                                class="bg-red-100 text-red-600 border border-red-200 px-3 py-2 rounded text-sm hover:bg-red-200 transition">
+                                                Batal
+                                            </button>
+                                        </form>
+
+                                    @else
+                                        <a href="{{ route('orders.show', $order->id) }}"
+                                            class="text-gray-600 hover:text-gray-900 border border-gray-300 px-4 py-2 rounded text-sm">
+                                            Detail
+                                        </a>
+                                    @endif
+                                </td>
                                 </tr>
                             @endforeach
                         </tbody>

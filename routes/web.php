@@ -38,6 +38,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/payment/{id}', [OrderController::class, 'paymentSuccess'])->name('payment.success');
 
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+
+    Route::post('/orders/{id}/cancel', [OrderController::class, 'cancelOrder'])->name('orders.cancel');
+    
 });
 
 //  Route ADMIN 
