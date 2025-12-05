@@ -4,29 +4,28 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 
+
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Route untuk USER
+// 2. Route Dashboard User/Tamu
 Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+    return view('welcome');
+})->name('dashboard');
 
+// 3. Group Middleware Auth (Untuk fitur yang wajib login saja)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Route ADMIN
+// 4. Route ADMIN 
 Route::middleware(['auth', 'admin'])->group(function () {
-
-    // Semua URL di dalam sini hanya bisa diakses admin
     Route::get('/admin/dashboard', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
-
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
