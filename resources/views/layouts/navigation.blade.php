@@ -8,12 +8,24 @@
                             <a href="{{ route('admin.dashboard') }}"
                                 class="font-semibold text-xl text-gray-800 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-300">{{ config('app.name', 'Laravel') }}</a>
                         @else
-                            <a href="{{ route('dashboard') }}"
+                            <a href="{{ route('home') }}"
                                 class="font-semibold text-xl text-gray-800 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-300">{{ config('app.name', 'Laravel') }}</a>
                         @endif
                     @else
-                        <a href="#"
+                        <a href="{{ route('home') }}"
                             class="font-semibold text-xl text-gray-800 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-300">{{ config('app.name', 'Laravel') }}</a>
+                    @endauth
+                </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    @auth
+                        @if(Auth::user()->role !== 'admin')
+                            
+
+                            <x-nav-link :href="route('orders.index')" :active="request()->routeIs('orders.index')">
+                                {{ __('Riwayat Pesanan') }}
+                            </x-nav-link>
+                        @endif
                     @endauth
                 </div>
             </div>
@@ -21,7 +33,7 @@
             <div class="hidden sm:flex sm:items-center sm:ms-6">
 
                 <button id="dark-mode-toggle"
-                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+                    class="mr-4 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
                     <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
                             d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
@@ -30,6 +42,24 @@
                 </button>
 
                 @auth
+                    @if(Auth::user()->role !== 'admin')
+                        <a href="{{ route('cart.index') }}"
+                            class="relative group mr-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+
+                            @if(Auth::user()->carts->count() > 0)
+                                <span
+                                    class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                                    {{ Auth::user()->carts->count() }}
+                                </span>
+                            @endif
+                        </a>
+                    @endif
+
                     <div class="ms-3 relative">
                         <x-dropdown align="right" width="48">
                             <x-slot name="trigger">
@@ -57,7 +87,7 @@
                                     @csrf
 
                                     <x-dropdown-link :href="route('logout')" onclick="event.preventDefault();
-                                                                                    this.closest('form').submit();">
+                                                                        this.closest('form').submit();">
                                         {{ __('Log Out') }}
                                     </x-dropdown-link>
                                 </form>
@@ -100,13 +130,27 @@
         <div class="pt-2 pb-3 space-y-1">
 
             @auth
-                @if(Auth::user()->usertype === 'admin')
+                @if(Auth::user()->role === 'admin')
                     <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                         {{ __('Admin Dashboard') }}
                     </x-responsive-nav-link>
                 @else
                     <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
+                    </x-responsive-nav-link>
+
+                    <x-responsive-nav-link :href="route('orders.index')" :active="request()->routeIs('orders.index')">
+                        {{ __('Riwayat Pesanan') }}
+                    </x-responsive-nav-link>
+
+                    <x-responsive-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.index')"
+                        class="flex justify-between items-center">
+                        <span>{{ __('Keranjang Belanja') }}</span>
+                        @if(Auth::user()->carts->count() > 0)
+                            <span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+                                {{ Auth::user()->carts->count() }} Item
+                            </span>
+                        @endif
                     </x-responsive-nav-link>
                 @endif
             @endauth
@@ -140,7 +184,7 @@
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault();
-                                                                        this.closest('form').submit();">
+                                                            this.closest('form').submit();">
                             {{ __('Log Out') }}
                         </x-responsive-nav-link>
                     </form>

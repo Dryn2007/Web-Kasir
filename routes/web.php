@@ -4,25 +4,43 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\OrderController;
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [CatalogController::class, 'index'])->name('home');
+Route::get('/product/{id}', [CatalogController::class, 'show'])->name('product.show');
 
-// 2. Route Dashboard User/Tamu
-Route::get('/dashboard', function () {
-    return view('welcome');
-})->name('dashboard');
+// Route Dashboard User/Tamu
+Route::get('/dashboard', [CatalogController::class, 'index'])->name('dashboard');
 
-// 3. Group Middleware Auth (Untuk fitur yang wajib login saja)
+
+// Group Middleware Auth (Untuk fitur yang wajib login saja)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // ROUTE KERANJANG
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/add/{id}', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::patch('/cart/update/{id}', [CartController::class, 'updateCart'])->name('cart.update');
+    Route::delete('/cart/remove/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
+
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+
+    Route::post('/buy-now/{id}', [CartController::class, 'buyNow'])->name('buy.now');
+
+    Route::get('/payment/{id}', [OrderController::class, 'paymentSimulation'])->name('payment.simulation');
+    Route::post('/payment/{id}', [OrderController::class, 'paymentSuccess'])->name('payment.success');
+
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
 });
 
-// 4. Route ADMIN 
+//  Route ADMIN 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/dashboard', function () {
         return view('admin.dashboard');
