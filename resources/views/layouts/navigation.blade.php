@@ -4,7 +4,7 @@
             <div class="flex">
                 <div class="shrink-0 flex items-center">
                     @auth
-                        @if(Auth::user()->usertype === 'admin')
+                        @if(Auth::user()->role === 'admin')
                             <a href="{{ route('admin.dashboard') }}"
                                 class="font-semibold text-xl text-gray-800 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-300">{{ config('app.name', 'Laravel') }}</a>
                         @else
@@ -57,7 +57,7 @@
                                     @csrf
 
                                     <x-dropdown-link :href="route('logout')" onclick="event.preventDefault();
-                                                                                this.closest('form').submit();">
+                                                                                    this.closest('form').submit();">
                                         {{ __('Log Out') }}
                                     </x-dropdown-link>
                                 </form>
@@ -140,7 +140,7 @@
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault();
-                                                                    this.closest('form').submit();">
+                                                                        this.closest('form').submit();">
                             {{ __('Log Out') }}
                         </x-responsive-nav-link>
                     </form>

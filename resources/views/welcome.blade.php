@@ -12,7 +12,7 @@
 
                     <h3>Selamat Datang di Sistem Informasi</h3>
                     <p>Ini adalah konten yang bisa dilihat oleh User Login maupun Tamu.</p>
-
+                    
                
 
                 </div>
