@@ -10,6 +10,44 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script>
+                function checkAuth(e) {
+                    // Cek status login
+                    const isGuest = {{ auth()->guest() ? 'true' : 'false' }};
+
+                    if (isGuest) {
+                        // STOP! Jangan kirim form dulu
+                        e.preventDefault();
+
+                        // Munculkan Pop-up
+                        Swal.fire({
+                            title: 'Login Dulu, Bro!',
+                            text: "Kamu harus login untuk membeli produk ini.",
+                            icon: 'warning',
+                            background: '#1a1b26',
+                            color: '#fff',
+                            showCancelButton: true,
+                            confirmButtonColor: '#4f46e5',
+                            cancelButtonColor: '#374151',
+                            confirmButtonText: 'Login Sekarang',
+                            cancelButtonText: 'Nanti'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = "{{ route('login') }}";
+                            }
+                        });
+
+                        // Return false biar form bener-bener berhenti
+                        return false;
+                    }
+
+                    // Jika user SUDAH login, script ini tidak melakukan apa-apa.
+                    // Form akan terkirim secara otomatis karena tombolnya type="submit".
+                    return true;
+                }
+            </script>
+
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])

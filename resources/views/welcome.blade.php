@@ -28,14 +28,36 @@
                             class="bg-white overflow-hidden shadow-sm rounded-lg hover:shadow-lg transition-shadow duration-300 flex flex-col h-full border border-gray-100">
 
                             <div class="h-48 w-full bg-gray-200 overflow-hidden relative">
-                                @if($product->stock <= 0)
-                                    <div
-                                        class="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold px-2 py-1 m-2 rounded z-10">
-                                        HABIS
-                                    </div>
-                                @endif
+                            @if($product->stock <= 0)
+                                <div class="absolute inset-0 bg-black/80 z-20 flex items-center justify-center backdrop-blur-sm">
+                                    <span
+                                        class="text-red-500 font-bold border-2 border-red-500 px-4 py-1 rounded rotate-[-10deg] tracking-widest text-lg shadow-lg">SOLD
+                                        OUT</span>
+                                </div>
+                            @endif
 
-                                
+                            @php
+                                $imageSrc = null;
+                                if ($product->image) {
+                                    if (str_starts_with($product->image, 'http')) {
+                                        $imageSrc = $product->image;
+                                    } else {
+                                        $imageSrc = asset('storage/' . $product->image);
+                                    }
+                                }
+                            @endphp
+
+                            @if($imageSrc)
+                                <img src="{{ $imageSrc }}" alt="{{ $product->name }}"
+                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 {{ $product->stock <= 0 ? 'grayscale opacity-50' : '' }}"
+                                    onerror="this.onerror=null; this.src='https://placehold.co/600x400/1a1b26/FFF?text=No+Image';">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-gray-600">
+                                    <span class="text-xs">No Image</span>
+                                </div>
+                            @endif
+
+
 
                                 @if($product->image)
                                     <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"

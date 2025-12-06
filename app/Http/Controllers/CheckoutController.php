@@ -15,10 +15,35 @@ class CheckoutController extends Controller
     // 1. Tampilkan Halaman Checkout
     public function index()
     {
-        $carts = Cart::where('user_id', Auth::id())->with('product')->get();
+        // SKENARIO A: User klik "Beli Sekarang" (Cek Session)
+        if (session()->has('direct_checkout_product_id')) {
 
-        if ($carts->isEmpty()) {
-            return redirect()->route('home');
+            $productId = session('direct_checkout_product_id');
+            $quantity = session('direct_checkout_quantity');
+            $product = Product::find($productId);
+
+            // Validasi dadakan (kalau produk dihapus admin pas user lagi browsing)
+            if (!$product) {
+                session()->forget(['direct_checkout_product_id', 'direct_checkout_quantity']);
+                return redirect()->route('home');
+            }
+
+            // Kita buat struktur data palsu (Mocking) agar mirip dengan struktur Cart
+            $fakeCartItem = new \stdClass();
+            $fakeCartItem->product = $product;
+            $fakeCartItem->product_id = $product->id;
+            $fakeCartItem->quantity = $quantity;
+
+            // Masukkan ke collection agar bisa di-looping di view
+            $carts = collect([$fakeCartItem]);
+        }
+        // SKENARIO B: User Checkout dari Keranjang (Normal)
+        else {
+            $carts = Cart::where('user_id', Auth::id())->with('product')->get();
+
+            if ($carts->isEmpty()) {
+                return redirect()->route('home');
+            }
         }
 
         return view('checkout.index', compact('carts'));
@@ -28,69 +53,93 @@ class CheckoutController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'address' => 'required|string|max:255',
-            'payment_method' => 'required',
+            'payment_method' => 'required|in:qris,gopay,dana',
         ]);
 
-        $carts = Cart::where('user_id', Auth::id())->with('product')->get();
+        $user = Auth::user();
+        $itemsToProcess = [];
+        $totalPrice = 0;
+        $isDirectBuy = false;
 
-        if ($carts->isEmpty()) {
-            return redirect()->route('home');
-        }
+        // --- TENTUKAN SUMBER DATA (SESSION vs CART) ---
 
-        // ==============================================================
-        // [BARU] VALIDASI STOK: CEK APAKAH STOK CUKUP?
-        // ==============================================================
-        // [VALIDASI KETAT]
-        foreach ($carts as $cart) {
-            // Ambil data produk TERBARU dari database (bukan data cache di cart)
-            $freshProduct = Product::find($cart->product_id);
+        if (session()->has('direct_checkout_product_id')) {
+            // KASUS A: BELI SEKARANG
+            $isDirectBuy = true;
+            $productId = session('direct_checkout_product_id');
+            $qty = session('direct_checkout_quantity');
+            $product = Product::find($productId);
 
-            // Jika produk sudah dihapus admin atau stoknya tiba-tiba 0
-            if (!$freshProduct || $freshProduct->stock < $cart->quantity) {
-                return redirect()->route('cart.index')->with('error', "Stok berubah! Produk '{$freshProduct->name}' sisa: {$freshProduct->stock}");
+            if ($product && $product->stock >= $qty) {
+                $itemsToProcess[] = [
+                    'product_id' => $product->id,
+                    'quantity' => $qty,
+                    'price' => $product->price,
+                    'model' => $product
+                ];
+                $totalPrice = $product->price * $qty;
+            } else {
+                return redirect()->route('home')->with('error', 'Stok berubah atau produk tidak ditemukan.');
+            }
+        } else {
+            // KASUS B: DARI KERANJANG
+            $carts = Cart::where('user_id', $user->id)->with('product')->get();
+
+            if ($carts->isEmpty()) {
+                return redirect()->route('home');
+            }
+
+            foreach ($carts as $cart) {
+                if ($cart->quantity > $cart->product->stock) {
+                    return redirect()->route('cart.index')->with('error', "Stok {$cart->product->name} tidak cukup.");
+                }
+
+                $itemsToProcess[] = [
+                    'product_id' => $cart->product_id,
+                    'quantity' => $cart->quantity,
+                    'price' => $cart->product->price,
+                    'model' => $cart->product
+                ];
+                $totalPrice += $cart->product->price * $cart->quantity;
             }
         }
 
-        // Hitung Total Harga
-        $totalPrice = 0;
-        foreach ($carts as $cart) {
-            $totalPrice += $cart->product->price * $cart->quantity;
-        }
+        // --- EKSEKUSI DATABASE ---
+        // PERBAIKAN: Menghapus duplikasi $request di dalam use()
+        $order = DB::transaction(function () use ($request, $user, $totalPrice, $itemsToProcess, $isDirectBuy) {
 
-        // Gunakan Database Transaction
-        $order = DB::transaction(function () use ($request, $carts, $totalPrice) {
-
-            // A. Buat Order Utama
+            // 1. Buat Order Header
             $order = Order::create([
-                'user_id' => Auth::id(),
-                'address' => $request->address,
+                'user_id' => $user->id,
+                'address' => 'Digital Delivery (Email)',
                 'status' => 'pending',
                 'total_price' => $totalPrice,
                 'payment_method' => $request->payment_method,
             ]);
 
-            // B. Pindahkan Item Cart ke OrderItems & Kurangi Stok
-            foreach ($carts as $cart) {
+            // 2. Buat Order Items & Kurangi Stok
+            foreach ($itemsToProcess as $item) {
                 OrderItem::create([
                     'order_id' => $order->id,
-                    'product_id' => $cart->product_id,
-                    'quantity' => $cart->quantity,
-                    'price' => $cart->product->price,
+                    'product_id' => $item['product_id'],
+                    'quantity' => $item['quantity'],
+                    'price' => $item['price'],
                 ]);
 
-                // Kurangi Stok Produk
-                $product = Product::find($cart->product_id);
-                $product->decrement('stock', $cart->quantity);
+                // Kurangi Stok
+                $item['model']->decrement('stock', $item['quantity']);
             }
 
-            // C. Kosongkan Keranjang
-            Cart::where('user_id', Auth::id())->delete();
+            // 3. BERSIH-BERSIH SETELAH ORDER
+            if ($isDirectBuy) {
+                session()->forget(['direct_checkout_product_id', 'direct_checkout_quantity']);
+            } else {
+                Cart::where('user_id', $user->id)->delete();
+            }
 
             return $order;
         });
 
-        // 3. Redirect ke halaman simulasi pembayaran
         return redirect()->route('payment.simulation', $order->id);
     }
 }

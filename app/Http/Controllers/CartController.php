@@ -59,24 +59,13 @@ class CartController extends Controller
             return redirect()->back()->with('error', 'Stok produk habis!');
         }
 
-        $cart = Cart::where('user_id', Auth::id())
-            ->where('product_id', $productId)
-            ->first();
+        // --- PERBAIKAN DISINI ---
+        // Jangan simpan ke Database Cart, tapi simpan ke SESSION
+        // Agar item di keranjang belanja user tidak ikut ter-checkout
+        session(['direct_checkout_product_id' => $productId]);
+        session(['direct_checkout_quantity' => 1]);
 
-        if ($cart) {
-            // CEK 2: Apakah melebihi stok?
-            if (($cart->quantity + 1) > $product->stock) {
-                return redirect()->route('cart.index')->with('error', 'Stok maksimal sudah tercapai di keranjang Anda.');
-            }
-            $cart->increment('quantity');
-        } else {
-            Cart::create([
-                'user_id' => Auth::id(),
-                'product_id' => $productId,
-                'quantity' => 1
-            ]);
-        }
-
+        // Langsung lempar ke halaman checkout
         return redirect()->route('checkout.index');
     }
 

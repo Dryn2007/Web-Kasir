@@ -1,9 +1,5 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Tambah Produk') }}
-        </h2>
-    </x-slot>
+  
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -39,9 +35,21 @@
                         <p class="text-xs text-gray-500">Masukkan link Google Drive, Mediafire, atau akses lainnya.</p>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block text-gray-700">Gambar</label>
-                        <input type="file" name="image" class="w-full border p-2 rounded">
+                    <div class="mb-4 p-4 bg-gray-50 rounded border border-gray-200">
+                        <label class="block text-gray-700 font-bold mb-2">Gambar Produk (Pilih Salah Satu)</label>
+                    
+                        <div class="mb-3">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Opsi 1: Upload File</label>
+                            <input type="file" name="image" class="w-full border bg-white p-2 rounded text-sm">
+                        </div>
+                    
+                        <div class="text-center text-xs text-gray-400 my-2">- ATAU -</div>
+                    
+                        <div>
+                            <label class="text-xs font-bold text-gray-500 uppercase">Opsi 2: Link Gambar (URL)</label>
+                            <input type="url" name="image_url" class="w-full border p-2 rounded text-sm"
+                                placeholder="https://example.com/gambar-game.jpg">
+                        </div>
                     </div>
 
                     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Simpan</button>

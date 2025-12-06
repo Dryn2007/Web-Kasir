@@ -6,9 +6,20 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="h-96 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
-                            @if($product->image)
-                                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
-                                    class="w-full h-full object-cover">
+
+                            @php
+$imageSrc = null;
+if ($product->image) {
+    if (str_starts_with($product->image, 'http')) {
+        $imageSrc = $product->image;
+    } else {
+        $imageSrc = asset('storage/' . $product->image);
+    }
+}
+                            @endphp
+
+                            @if($imageSrc)
+                                <img src="{{ $imageSrc }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
                             @else
                                 <span class="text-gray-400">No Image</span>
                             @endif
@@ -35,8 +46,9 @@
 
                             <div class="mt-8">
                                 @if($product->stock > 0)
-                                    <div class="flex gap-4">
-                                        <form action="{{ route('buy.now', $product->id) }}" method="POST" class="flex-1">
+                                    <div class="mt-8 flex gap-4">
+
+                                        <form action="{{ route('buy.now', $product->id) }}" method="POST" class="flex-1" onsubmit="return checkAuth(event)">
                                             @csrf
                                             <button type="submit"
                                                 class="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition">
@@ -44,7 +56,7 @@
                                             </button>
                                         </form>
 
-                                        <form action="{{ route('cart.add', $product->id) }}" method="POST">
+                                        <form action="{{ route('cart.add', $product->id) }}" method="POST" onsubmit="return checkAuth(event)">
                                             @csrf
                                             <button type="submit"
                                                 class="bg-gray-100 text-gray-800 font-bold py-3 px-4 rounded-lg hover:bg-gray-200 border border-gray-300 transition flex items-center justify-center"
@@ -56,9 +68,11 @@
                                                 </svg>
                                             </button>
                                         </form>
+
                                     </div>
                                 @else
-                                    <button disabled class="w-full bg-gray-300 text-gray-500 font-bold py-3 px-6 rounded-lg cursor-not-allowed">
+                                    <button disabled
+                                        class="w-full bg-gray-300 text-gray-500 font-bold py-3 px-6 rounded-lg cursor-not-allowed">
                                         Stok Habis
                                     </button>
                                 @endif

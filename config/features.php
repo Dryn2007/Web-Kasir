@@ -1,7 +1,7 @@
 <?php
 return [
 // UNIVERSAL FITUR
-    'show_darkmode'   => false,
+    'darkmode'   => true,
 
 // FITUR ADMIN
 

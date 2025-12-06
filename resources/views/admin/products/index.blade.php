@@ -1,9 +1,5 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Kelola Produk') }}
-        </h2>
-    </x-slot>
+   
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -26,10 +22,21 @@
                         @foreach($products as $product)
                             <tr>
                                 <td class="border px-4 py-2">
-                                    @if($product->image)
-                                        <img src="{{ asset('storage/' . $product->image) }}" width="50">
+                                    @php
+                                        $imageSrc = null;
+                                        if ($product->image) {
+                                            if (str_starts_with($product->image, 'http')) {
+                                                $imageSrc = $product->image;
+                                            } else {
+                                                $imageSrc = asset('storage/' . $product->image);
+                                            }
+                                        }
+                                    @endphp
+
+                                    @if($imageSrc)
+                                        <img src="{{ $imageSrc }}" alt="{{ $product->name }}" class="w-[200px] h-full object-cover">
                                     @else
-                                        -
+                                        <span class="text-gray-400">No Image</span>
                                     @endif
                                 </td>
                                 <td class="border px-4 py-2">{{ $product->name }}</td>
