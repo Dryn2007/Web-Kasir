@@ -8,6 +8,9 @@ use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+
 
 
 Route::get('/', [CatalogController::class, 'index'])->name('home');
@@ -51,6 +54,15 @@ Route::middleware(['auth', 'admin'])->group(function () {
     })->name('admin.dashboard');
 
     Route::resource('admin/products', ProductController::class)->names('admin.products');
+
+    //(RIWAYAT TRANSAKSI)
+    Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders.index');
+    Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
+    Route::patch('/admin/orders/{id}/approve', [AdminOrderController::class, 'markAsPaid'])->name('admin.orders.approve');
+
+    //  MANAJEMEN USER )
+    Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');
+    Route::delete('/admin/users/{id}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
 });
 
 require __DIR__ . '/auth.php';

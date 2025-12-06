@@ -15,17 +15,17 @@
 
                     <h3 class="font-bold text-lg mb-4">Manajemen Produk</h3>
 
-                    <div class="flex space-x-4">
-                        <!-- Tombol Create Produk (Sesuai Request) -->
-                        <a href="{{ route('admin.products.create') }}"
-                            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow-md transition duration-150 ease-in-out">
-                            + Tambah Produk Baru
-                        </a>
+                   
 
-                        <!-- Tombol Lihat Semua Produk (Opsional, tapi sangat berguna) -->
+                    <div class="flex flex-wrap gap-4">
                         <a href="{{ route('admin.products.index') }}"
-                            class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded shadow-md transition duration-150 ease-in-out">
-                            Lihat Semua Produk
+                            class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition">
+                            📦 Kelola Produk
+                        </a>
+                    
+                        <a href="{{ route('admin.users.index') }}"
+                            class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition">
+                            👥 Data Pelanggan
                         </a>
                     </div>
 
