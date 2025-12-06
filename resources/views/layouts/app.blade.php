@@ -47,6 +47,72 @@
                     return true;
                 }
             </script>
+            <script>
+                let timeout = null;
+
+                function fetchSuggestions(query) {
+                    const list = document.getElementById('suggestion-list');
+                    const container = document.getElementById('search-suggestions');
+
+                    // Jika kosong, sembunyikan
+                    if (query.length < 2) {
+                        container.classList.add('hidden');
+                        return;
+                    }
+
+                    // Debounce (Tunggu user selesai ngetik sebentar biar gak spam server)
+                    clearTimeout(timeout);
+                    timeout = setTimeout(async () => {
+                        try {
+                            // Fetch data dari route Laravel
+                            const response = await fetch(`{{ route('search.suggestions') }}?query=${query}`);
+                            const products = await response.json();
+
+                            // Kosongkan list lama
+                            list.innerHTML = '';
+
+                            if (products.length > 0) {
+                                container.classList.remove('hidden');
+
+                                // Loop hasil dan buat HTML
+                                products.forEach(product => {
+                                    const li = document.createElement('li');
+                                    li.innerHTML = `
+                                        <a href="${product.url}" class="block px-4 py-3 hover:bg-indigo-900/30 hover:text-white transition flex items-center gap-3">
+                                            <img src="${product.image}" class="w-10 h-10 object-cover rounded bg-gray-800">
+                                            <div>
+                                                <div class="font-bold text-gray-100">${product.name}</div>
+                                                <div class="text-xs text-indigo-400 font-mono">Rp ${product.price}</div>
+                                            </div>
+                                        </a>
+                                    `;
+                                    list.appendChild(li);
+                                });
+                            } else {
+                                // Jika tidak ada hasil
+                                container.classList.remove('hidden');
+                                list.innerHTML = `
+                                    <li class="px-4 py-3 text-gray-500 text-center italic">
+                                        No games found.
+                                    </li>
+                                `;
+                            }
+                        } catch (error) {
+                            console.error('Error fetching suggestions:', error);
+                        }
+                    }, 300); // Delay 300ms
+                }
+
+                // Klik di luar search bar untuk menutup suggestion
+                document.addEventListener('click', function (e) {
+                    const container = document.getElementById('search-suggestions');
+                    const input = document.getElementById('search-input');
+
+                    if (!container.contains(e.target) && e.target !== input) {
+                        container.classList.add('hidden');
+                    }
+                });
+            </script>
 
 
         <!-- Scripts -->

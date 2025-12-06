@@ -1,29 +1,46 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Profile') }}
+        <h2 class="font-black text-2xl text-white leading-tight brand-font tracking-wider">
+            PLAYER <span class="text-indigo-500">PROFILE</span>
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-12 bg-[#0b0c15] min-h-screen">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+
+            <div
+                class="p-4 sm:p-8 bg-[#1a1b26] border border-gray-800 shadow-[0_0_20px_rgba(79,70,229,0.1)] sm:rounded-lg">
                 <div class="max-w-xl">
+                    <h3 class="text-lg font-bold text-white mb-4 brand-font border-b border-gray-700 pb-2">
+                        ACCOUNT <span class="text-indigo-400">DETAILS</span>
+                    </h3>
+
                     @include('profile.partials.update-profile-information-form')
                 </div>
             </div>
 
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+            <div
+                class="p-4 sm:p-8 bg-[#1a1b26] border border-gray-800 shadow-[0_0_20px_rgba(79,70,229,0.1)] sm:rounded-lg">
                 <div class="max-w-xl">
+                    <h3 class="text-lg font-bold text-white mb-4 brand-font border-b border-gray-700 pb-2">
+                        SECURITY <span class="text-indigo-400">SETTINGS</span>
+                    </h3>
+
                     @include('profile.partials.update-password-form')
                 </div>
             </div>
 
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+            <div
+                class="p-4 sm:p-8 bg-[#1a1b26] border border-red-900/30 shadow-[0_0_20px_rgba(239,68,68,0.1)] sm:rounded-lg">
                 <div class="max-w-xl">
+                    <h3 class="text-lg font-bold text-red-500 mb-4 brand-font border-b border-red-900/30 pb-2">
+                        DANGER <span class="text-white">ZONE</span>
+                    </h3>
+
                     @include('profile.partials.delete-user-form')
                 </div>
             </div>
+
         </div>
     </div>
 </x-app-layout>

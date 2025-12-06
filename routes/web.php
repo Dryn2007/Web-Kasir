@@ -18,7 +18,7 @@ Route::get('/product/{id}', [CatalogController::class, 'show'])->name('product.s
 
 // Route Dashboard User/Tamu
 Route::get('/dashboard', [CatalogController::class, 'index'])->name('dashboard');
-
+Route::get('/search-suggestions', [CatalogController::class, 'getSuggestions'])->name('search.suggestions');
 
 // Group Middleware Auth (Untuk fitur yang wajib login saja)
 Route::middleware('auth')->group(function () {
@@ -39,6 +39,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/payment/{id}', [OrderController::class, 'paymentSimulation'])->name('payment.simulation');
     Route::post('/payment/{id}', [OrderController::class, 'paymentSuccess'])->name('payment.success');
+
+    Route::patch('/payment/{id}/change', [OrderController::class, 'updatePaymentMethod'])->name('payment.change');
 
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');

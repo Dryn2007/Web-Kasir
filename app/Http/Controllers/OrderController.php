@@ -13,8 +13,33 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $orders = Order::where('user_id', Auth::id())->latest()->get();
+        $orders = Order::where('user_id', Auth::id())
+            ->with('items.product')
+            ->latest()
+            ->paginate(10); // <--- JANGAN GUNAKAN GET()
+
         return view('orders.index', compact('orders'));
+    }
+
+    // Method Baru: Ganti Metode Pembayaran
+    public function updatePaymentMethod(Request $request, $id)
+    {
+        $request->validate([
+            'payment_method' => 'required|in:qris,gopay,dana',
+        ]);
+
+        $order = Order::where('user_id', Auth::id())->where('id', $id)->firstOrFail();
+
+        // Hanya boleh ganti jika status masih pending
+        if ($order->status == 'pending') {
+            $order->update([
+                'payment_method' => $request->payment_method
+            ]);
+
+            return redirect()->back()->with('success', 'Metode pembayaran berhasil diubah!');
+        }
+
+        return redirect()->back()->with('error', 'Tidak bisa mengganti metode untuk pesanan ini.');
     }
 
     public function show($id)
