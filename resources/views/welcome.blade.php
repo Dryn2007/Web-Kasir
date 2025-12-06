@@ -21,7 +21,7 @@
             <h2 class="text-2xl font-bold text-gray-800 mb-6 px-4 sm:px-0">Produk Terbaru</h2>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4 sm:px-0">
-            
+
                 @foreach($products as $product)
                     <a href="{{ route('product.show', $product->id) }}" class="group">
                         <div
@@ -29,10 +29,13 @@
 
                             <div class="h-48 w-full bg-gray-200 overflow-hidden relative">
                                 @if($product->stock <= 0)
-                                    <div class="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold px-2 py-1 m-2 rounded z-10">
+                                    <div
+                                        class="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold px-2 py-1 m-2 rounded z-10">
                                         HABIS
                                     </div>
                                 @endif
+
+                                
 
                                 @if($product->image)
                                     <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
@@ -64,7 +67,10 @@
                         </div>
                     </a>
                 @endforeach
-            
+
+            </div>
+            <div class="mt-8 px-4 sm:px-0">
+                {{ $products->links() }}
             </div>
 
             @if($products->isEmpty())

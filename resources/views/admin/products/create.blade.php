@@ -33,6 +33,13 @@
                     </div>
 
                     <div class="mb-4">
+                        <label class="block text-gray-700 font-bold">Link Download Game / Produk</label>
+                        <input type="url" name="download_url" class="w-full border border-gray-300 p-2 rounded"
+                            placeholder="https://google.drive.com/..." required>
+                        <p class="text-xs text-gray-500">Masukkan link Google Drive, Mediafire, atau akses lainnya.</p>
+                    </div>
+
+                    <div class="mb-4">
                         <label class="block text-gray-700">Gambar</label>
                         <input type="file" name="image" class="w-full border p-2 rounded">
                     </div>

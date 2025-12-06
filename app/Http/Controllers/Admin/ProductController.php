@@ -30,6 +30,7 @@ class ProductController extends Controller
             'price' => 'required|numeric',
             'stock' => 'required|integer',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'download_url' => 'required|url',
         ]);
 
         $data = $request->all();

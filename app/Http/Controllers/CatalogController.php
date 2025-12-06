@@ -11,7 +11,7 @@ class CatalogController extends Controller
     public function index()
     {
         // Ambil semua produk, urutkan dari yang terbaru
-        $products = Product::latest()->get();
+        $products = Product::latest()->paginate(8);
         return view('welcome', compact('products'));
     }
 
