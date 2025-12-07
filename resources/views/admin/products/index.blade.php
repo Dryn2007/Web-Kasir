@@ -32,11 +32,19 @@
                                    placeholder="Search product name...">
                         </div>
 
-                        <div class="relative w-full md:w-64 flex-shrink-0">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" /></svg>
-                            </div>
-                            <select name="sort" onchange="this.form.submit()" class="w-full bg-[#1a1b26] text-gray-300 border border-gray-600 rounded focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 block pl-10 p-2 text-sm cursor-pointer">
+                        <div class="relative w-full md:w-48 flex-shrink-0">
+                            <select name="category_id" onchange="this.form.submit()" class="w-full bg-[#1a1b26] text-gray-300 border border-gray-600 rounded focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 block p-2 text-sm cursor-pointer">
+                                <option value="">All Categories</option>
+                                @foreach($categories as $cat)
+                                    <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>
+                                        {{ $cat->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="relative w-full md:w-48 flex-shrink-0">
+                            <select name="sort" onchange="this.form.submit()" class="w-full bg-[#1a1b26] text-gray-300 border border-gray-600 rounded focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 block p-2 text-sm cursor-pointer">
                                 <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Newest Upload</option>
                                 <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>🔥 Best Selling</option>
                                 <option value="rating_high" {{ request('sort') == 'rating_high' ? 'selected' : '' }}>⭐ Highest Rating</option>
@@ -46,8 +54,8 @@
                             </select>
                         </div>
 
-                        @if(request('search') || request('sort'))
-                            <a href="{{ route('admin.products.index') }}" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded px-4 py-2 flex items-center justify-center gap-2 text-xs font-bold transition">
+                        @if(request('search') || request('sort') || request('category_id'))
+                            <a href="{{ route('admin.products.index') }}" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded px-4 py-2 flex items-center justify-center gap-2 text-xs font-bold transition" title="Reset Filters">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                             </a>
                         @endif
@@ -63,8 +71,8 @@
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="bg-[#0f1016] border-b border-gray-700 text-gray-400 uppercase text-xs tracking-wider">
-                                    <th class="px-6 py-4 rounded-tl-lg">Product</th>
-                                    <th class="px-6 py-4">Performance (Stats)</th>
+                                    <th class="px-6 py-4 rounded-tl-lg">Product Details</th>
+                                    <th class="px-6 py-4">Stats</th>
                                     <th class="px-6 py-4">Price</th>
                                     <th class="px-6 py-4">Stock</th>
                                     <th class="px-6 py-4 rounded-tr-lg text-right">Actions</th>
@@ -95,7 +103,10 @@
                                                 </div>
                                                 <div>
                                                     <div class="font-bold text-white group-hover:text-indigo-400 transition">{{ $product->name }}</div>
-                                                    <div class="text-[10px] text-gray-500 uppercase tracking-wider">ID: {{ $product->id }}</div>
+                                                    
+                                                    <span class="inline-block mt-1 text-[10px] uppercase font-bold tracking-wider text-indigo-300 bg-indigo-900/30 px-1.5 py-0.5 rounded border border-indigo-500/30">
+                                                        {{ $product->category->name ?? 'Uncategorized' }}
+                                                    </span>
                                                 </div>
                                             </div>
                                         </td>
@@ -104,17 +115,16 @@
                                             <div class="flex flex-col gap-1">
                                                 <div class="flex items-center gap-2">
                                                     <div class="flex text-yellow-500">
-                                                        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                                        <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                                                     </div>
                                                     <span class="text-white font-bold text-xs">
                                                         {{ number_format($product->reviews_avg_rating ?? 0, 1) }}
                                                     </span>
-                                                    <span class="text-gray-500 text-[10px]">({{ $product->reviews_count }} Ulasan)</span>
+                                                    <span class="text-gray-500 text-[10px]">({{ $product->reviews_count }})</span>
                                                 </div>
                                                 
-                                                <div class="flex items-center gap-2 text-xs">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
-                                                    <span class="text-gray-300 font-bold">{{ $product->order_items_sum_quantity ?? 0 }}</span> <span class="text-gray-500">Terjual</span>
+                                                <div class="flex items-center gap-1 text-xs">
+                                                    <span class="text-gray-400 font-bold">{{ $product->order_items_sum_quantity ?? 0 }}</span> <span class="text-gray-600">Sold</span>
                                                 </div>
                                             </div>
                                         </td>
@@ -133,22 +143,24 @@
                                             @endif
                                         </td>
 
-                                        <td class="px-6 py-4 text-right flex justify-end gap-2 items-center h-full pt-6">
-                                            <a href="{{ route('admin.products.edit', $product) }}" class="text-yellow-500 hover:text-yellow-300 bg-yellow-900/20 hover:bg-yellow-900/40 p-2 rounded transition border border-yellow-900/30">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                </svg>
-                                            </a>
-
-                                            <form action="{{ route('admin.products.destroy', $product) }}" method="POST" onsubmit="return confirm('Hapus produk ini?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-500 hover:text-red-300 bg-red-900/20 hover:bg-red-900/40 p-2 rounded transition border border-red-900/30">
+                                        <td class="px-6 py-4 text-right">
+                                            <div class="flex justify-end gap-2 items-center">
+                                                <a href="{{ route('admin.products.edit', $product) }}" class="text-yellow-500 hover:text-yellow-300 bg-yellow-900/20 hover:bg-yellow-900/40 p-2 rounded transition border border-yellow-900/30">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                     </svg>
-                                                </button>
-                                            </form>
+                                                </a>
+
+                                                <form action="{{ route('admin.products.destroy', $product) }}" method="POST" onsubmit="return confirm('Hapus produk ini?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-500 hover:text-red-300 bg-red-900/20 hover:bg-red-900/40 p-2 rounded transition border border-red-900/30">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach

@@ -13,6 +13,7 @@ class Product extends Model
         'stock',
         'image',
         'download_url',
+        'category_id',
     ];
 
     public function reviews()
@@ -40,5 +41,10 @@ class Product extends Model
                 $q->where('status', 'paid');
             })
             ->sum('quantity');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }

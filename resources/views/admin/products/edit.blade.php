@@ -35,6 +35,19 @@
                                 required>
                         </div>
 
+                        <div class="mb-4">
+                            <label class="block text-gray-400 text-xs font-bold mb-2">CATEGORY</label>
+                            <select name="category_id"
+                                class="w-full bg-[#0f1016] border border-gray-700 text-white rounded p-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                <option value="">-- Select Category --</option>
+                                @foreach($categories as $cat)
+                                    <option value="{{ $cat->id }}" {{ old('category_id', $product->category_id ?? '') == $cat->id ? 'selected' : '' }}>
+                                        {{ $cat->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
                     </div>
 
                     <div class="mb-6">
@@ -59,7 +72,7 @@
                         @if($product->image)
                             <div class="mb-6 flex items-center gap-4 bg-[#1a1b26] p-3 rounded border border-gray-700 w-fit">
                                 @php
-                                    $imageSrc = str_starts_with($product->image, 'http') ? $product->image : asset('storage/' . $product->image);
+    $imageSrc = str_starts_with($product->image, 'http') ? $product->image : asset('storage/' . $product->image);
                                 @endphp
                                 <img src="{{ $imageSrc }}" class="h-16 w-16 object-cover rounded border border-gray-600">
                                 <div>

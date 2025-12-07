@@ -2,28 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\Category; // <--- PENTING: Import Model Category
 use Illuminate\Http\Request;
 
 class CatalogController extends Controller
 {
     public function index(Request $request)
     {
-        // 1. MULAI QUERY DENGAN LOGIKA BEST SELLER YANG BENAR
-        // Hitung jumlah quantity, TAPI hanya dari order yang statusnya 'paid'
-        $query = Product::withSum(['orderItems' => function ($query) {
-            $query->whereHas('order', function ($q) {
-                $q->where('status', 'paid');
-            });
-        }], 'quantity');
+        // 1. QUERY DASAR
+        // - Load 'category' & 'reviews' biar tidak query berulang (N+1 Problem)
+        // - Hitung jumlah terjual (hanya yang statusnya 'paid')
+        $query = Product::with(['category', 'reviews'])
+            ->withSum(['orderItems' => function ($q) {
+                $q->whereHas('order', fn($o) => $o->where('status', 'paid'));
+            }], 'quantity');
 
-        // 2. LOGIKA PENCARIAN
+        // 2. FILTER KATEGORI (Agar Dropdown Kategori Berfungsi)
+        if ($request->has('category') && $request->category != '') {
+            $query->whereHas('category', function ($q) use ($request) {
+                $q->where('slug', $request->category);
+            });
+        }
+
+        // 3. LOGIKA PENCARIAN
         if ($request->has('search') && $request->search != '') {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        // 3. LOGIKA SORTIR
+        // 4. LOGIKA SORTIR
         if ($request->has('sort')) {
             switch ($request->sort) {
                 case 'popular':
@@ -48,15 +55,12 @@ class CatalogController extends Controller
             $query->orderBy('created_at', 'desc');
         }
 
-        // Secondary Sort: Jika jumlah terjual sama/harga sama, urutkan berdasarkan terbaru
-        // Ini penting agar urutan tidak acak-acakan jika angkanya sama
-        if ($request->sort !== 'latest') {
-            $query->orderBy('created_at', 'desc');
-        }
-
         $products = $query->paginate(12)->appends($request->all());
 
-        return view('welcome', compact('products'));
+        // 5. AMBIL DATA KATEGORI (Untuk Dropdown di View)
+        $categories = Category::withCount('products')->get();
+
+        return view('welcome', compact('products', 'categories'));
     }
 
     public function show(Request $request, $id)
@@ -64,7 +68,6 @@ class CatalogController extends Controller
         $product = Product::findOrFail($id);
 
         // 1. DATA STATISTIK UTAMA (TIDAK BOLEH TERPENGARUH FILTER)
-        // Kita hitung langsung dari database murni
         $allReviewsCount = $product->reviews()->count();
         $avgRating = round($product->reviews()->avg('rating'), 1) ?? 0;
 
@@ -76,7 +79,7 @@ class CatalogController extends Controller
             $reviewsQuery->where('rating', $request->rating);
         }
 
-        // Sorting
+        // Sorting Review
         if ($request->has('sort')) {
             switch ($request->sort) {
                 case 'rating_high':
@@ -96,7 +99,7 @@ class CatalogController extends Controller
             $reviewsQuery->latest();
         }
 
-        $reviews = $reviewsQuery->get(); // Hasil yang sudah difilter
+        $reviews = $reviewsQuery->get();
 
         // 3. LOGIKA CEK PEMBELIAN (Untuk Form)
         $canReview = false;
@@ -120,11 +123,10 @@ class CatalogController extends Controller
             }
         }
 
-        // Kirim semua variabel ke view
         return view('product.show', compact('product', 'reviews', 'allReviewsCount', 'avgRating', 'canReview', 'reviewMessage'));
     }
 
-    // Method baru untuk AJAX Search
+    // Method untuk AJAX Search Suggestion
     public function getSuggestions(Request $request)
     {
         $query = $request->get('query');
@@ -134,10 +136,9 @@ class CatalogController extends Controller
         }
 
         $products = Product::where('name', 'like', '%' . $query . '%')
-            ->take(5) // Batasi cuma 5 hasil biar rapi
+            ->take(5)
             ->get()
             ->map(function ($product) {
-                // Format URL gambar agar siap pakai di JS
                 if ($product->image) {
                     $img = str_starts_with($product->image, 'http')
                         ? $product->image

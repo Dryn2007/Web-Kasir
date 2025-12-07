@@ -33,6 +33,19 @@
                                 placeholder="e.g. 100" required>
                         </div>
 
+                        <div class="mb-4">
+                            <label class="block text-gray-400 text-xs font-bold mb-2">CATEGORY</label>
+                            <select name="category_id"
+                                class="w-full bg-[#0f1016] border border-gray-700 text-white rounded p-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                <option value="">-- Select Category --</option>
+                                @foreach($categories as $cat)
+                                    <option value="{{ $cat->id }}" {{ old('category_id', $product->category_id ?? '') == $cat->id ? 'selected' : '' }}>
+                                        {{ $cat->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
                     </div>
 
                     <div class="mb-6">

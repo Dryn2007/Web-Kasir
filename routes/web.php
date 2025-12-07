@@ -97,6 +97,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/chat', [App\Http\Controllers\Admin\ChatController::class, 'index'])->name('admin.chat.index');
     Route::get('/admin/chat/{userId}', [App\Http\Controllers\Admin\ChatController::class, 'show'])->name('admin.chat.show');
     Route::post('/admin/chat/{userId}', [App\Http\Controllers\Admin\ChatController::class, 'reply'])->name('admin.chat.reply');
+
+    // Manajemen Kategori
+    Route::get('/admin/categories', [App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('admin.categories.index');
+    Route::post('/admin/categories', [App\Http\Controllers\Admin\CategoryController::class, 'store'])->name('admin.categories.store');
+    Route::delete('/admin/categories/{id}', [App\Http\Controllers\Admin\CategoryController::class, 'destroy'])->name('admin.categories.destroy');
 });
 
 require __DIR__ . '/auth.php';

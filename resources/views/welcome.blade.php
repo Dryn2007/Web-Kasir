@@ -40,61 +40,68 @@
             <div class="sticky top-20 z-40 px-4 sm:px-0 mb-10">
                 <form action="{{ route('home') }}" method="GET">
                     <input type="hidden" name="ref" value="filter">
-            
+
                     <div
                         class="bg-[#1a1b26]/95 backdrop-blur-md border border-gray-700/50 rounded-xl p-1.5 flex flex-col md:flex-row gap-2 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]">
-            
-                        <div class="relative w-full md:w-64 flex-shrink-0 group">
+
+                        <div class="relative w-full md:w-48 flex-shrink-0 group">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
-                                @if(request('sort') == 'popular')
-                                    <svg class="w-4 h-4 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" />
-                                    </svg>
-                                @elseif(request('sort') == 'price_asc')
-                                    <svg class="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                                    </svg>
-                                @elseif(request('sort') == 'price_desc')
-                                    <svg class="w-4 h-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
-                                    </svg>
-                                @else
-                                    <svg class="w-4 h-4 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                @endif
+                                <svg class="w-4 h-4 text-gray-500 group-hover:text-indigo-400 transition" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+                                </svg>
                             </div>
-            
                             <select name="sort" onchange="this.form.submit()"
                                 class="w-full bg-[#0f1016] text-gray-300 border border-gray-700/50 text-sm rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block pl-10 pr-8 p-3 cursor-pointer hover:bg-gray-900 transition appearance-none font-bold">
-                                <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Newest Arrival</option>
-                                <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }} class="text-yellow-400">
-                                    🔥 Best Selling</option>
-                                <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Price: Low to High
-                                </option>
-                                <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Price: High to Low
-                                </option>
-                                <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Oldest</option>
+                                <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Newest</option>
+                                <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}
+                                    class="text-yellow-400">🔥 Popular</option>
+                                <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Price:
+                                    Low</option>
+                                <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Price:
+                                    High</option>
                             </select>
-            
-                            <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500">
+                            <div
+                                class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7"></path>
                                 </svg>
                             </div>
                         </div>
-            
+
+                        <div class="relative w-full md:w-48 flex-shrink-0 group">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+                                <svg class="w-4 h-4 text-gray-500 group-hover:text-indigo-400 transition" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                                </svg>
+                            </div>
+                            <select name="category" onchange="this.form.submit()"
+                                class="w-full bg-[#0f1016] text-gray-300 border border-gray-700/50 text-sm rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block pl-10 pr-8 p-3 cursor-pointer hover:bg-gray-900 transition appearance-none font-bold">
+                                <option value="">All Categories</option>
+                                @foreach($categories as $cat)
+                                    <option value="{{ $cat->slug }}" {{ request('category') == $cat->slug ? 'selected' : '' }}>
+                                        {{ $cat->name }} ({{ $cat->products_count }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div
+                                class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </div>
+
                         <div class="relative w-full group">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="h-5 w-5 text-gray-500 group-focus-within:text-indigo-400 transition" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    class="h-5 w-5 text-gray-500 group-focus-within:text-indigo-400 transition"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
@@ -103,20 +110,21 @@
                                 class="w-full bg-[#0f1016]/50 hover:bg-[#0f1016] focus:bg-[#0f1016] text-white border-transparent focus:border-indigo-500 text-sm rounded-lg focus:ring-0 block pl-10 p-3 placeholder-gray-500 font-medium transition"
                                 placeholder="Search games..." autocomplete="off" onkeyup="fetchSuggestions(this.value)"
                                 onfocus="fetchSuggestions(this.value)">
-            
+
                             <div id="search-suggestions"
                                 class="absolute top-full left-0 right-0 mt-2 bg-[#1a1b26] border border-gray-700 rounded-lg shadow-2xl hidden overflow-hidden z-50">
                                 <ul id="suggestion-list" class="divide-y divide-gray-800 text-sm text-gray-300"></ul>
                             </div>
                         </div>
-            
-                        @if(request('search') || request('sort'))
+
+                        @if(request('search') || request('sort') || request('category'))
                             <a href="{{ route('home') }}"
                                 class="flex-shrink-0 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg w-10 flex items-center justify-center transition"
                                 title="Reset Filters">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </a>
                         @endif
@@ -141,14 +149,14 @@
 
                         <div class="relative h-64 w-full overflow-hidden bg-gray-900">
                             @php
-    $imageSrc = null;
-    if ($product->image) {
-        if (str_starts_with($product->image, 'http')) {
-            $imageSrc = $product->image;
-        } else {
-            $imageSrc = asset('storage/' . $product->image);
-        }
-    }
+                                $imageSrc = null;
+                                if ($product->image) {
+                                    if (str_starts_with($product->image, 'http')) {
+                                        $imageSrc = $product->image;
+                                    } else {
+                                        $imageSrc = asset('storage/' . $product->image);
+                                    }
+                                }
                             @endphp
 
                             @if($imageSrc)
@@ -172,9 +180,8 @@
                                 <div
                                     class="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-[2px] z-10">
                                     <span
-                                        class="bg-red-600 text-white text-xs font-black px-4 py-2 rounded-sm -rotate-3 tracking-widest shadow-lg border-2 border-red-500/50">
-                                        SOLD OUT
-                                    </span>
+                                        class="bg-red-600 text-white text-xs font-black px-4 py-2 rounded-sm -rotate-3 tracking-widest shadow-lg border-2 border-red-500/50">SOLD
+                                        OUT</span>
                                 </div>
                             @endif
 
@@ -186,6 +193,11 @@
                         <div class="p-5 flex flex-col flex-grow relative -mt-8 z-10">
 
                             <div class="flex justify-between items-center mb-2">
+                                <span
+                                    class="text-[10px] uppercase font-bold tracking-wider text-indigo-400 bg-indigo-900/20 px-2 py-0.5 rounded border border-indigo-500/30">
+                                    {{ $product->category->name ?? 'GAME' }}
+                                </span>
+
                                 <div
                                     class="flex items-center gap-1 bg-black/40 backdrop-blur-md px-2 py-1 rounded-full border border-white/5">
                                     <svg class="w-3 h-3 text-yellow-400 fill-current" viewBox="0 0 24 24">
@@ -194,16 +206,23 @@
                                     </svg>
                                     <span class="text-xs font-bold text-white">{{ $product->average_rating }}</span>
                                 </div>
-                                <span
-                                    class="text-[10px] font-medium text-gray-400 bg-black/40 px-2 py-1 rounded-full border border-white/5">
-                                    {{ $product->total_sold }} Sold
-                                </span>
                             </div>
 
                             <h3 class="text-lg font-bold text-white mb-1 leading-snug group-hover:text-indigo-400 transition-colors line-clamp-1"
                                 title="{{ $product->name }}">
                                 {{ $product->name }}
                             </h3>
+
+                            <div class="flex items-center gap-1 mb-3">
+                                <span class="text-[10px] font-medium text-gray-500 flex items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                    </svg>
+                                    {{ $product->total_sold }} Sold
+                                </span>
+                            </div>
 
                             <div class="flex-grow"></div>
 
@@ -252,11 +271,9 @@
                             d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <h3 class="text-lg font-medium text-gray-300">No Games Found</h3>
-                    <p class="mt-1 text-gray-500">Coba kata kunci lain atau reset pencarian.</p>
-                    @if(request('search'))
-                        <a href="{{ route('home') }}"
-                            class="mt-4 inline-block text-indigo-400 hover:text-indigo-300 underline">Reset Search</a>
-                    @endif
+                    <p class="mt-1 text-gray-500">Coba kata kunci lain atau reset filter.</p>
+                    <a href="{{ route('home') }}"
+                        class="mt-4 inline-block text-indigo-400 hover:text-indigo-300 underline">Reset All</a>
                 </div>
             @endif
 
