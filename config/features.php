@@ -10,6 +10,9 @@ return [
     // Light Mode & Dark Mode Switcher
     'darkmode' => true,
 
+    // Tampilan Rating Bintang (Global)
+    'show_rating_stars' => true, // Tampilkan bintang rating di seluruh halaman
+
     // Landing Page (Homepage)
     'landing_page' => [
         'enabled'       => true,
@@ -34,7 +37,7 @@ return [
         'show_price'    => true,
         'show_stock'    => true,
         'show_description' => true,
-        'show_rating'   => true,   // Statistik rating
+        'show_rating'   => true,   // Statistik rating & bintang di detail produk
         'show_sold'     => true,   // Total terjual
         'show_reviews'  => true,   // List review dari user
     ],
@@ -111,8 +114,6 @@ return [
 
     // Dashboard Utama
     'admin_dashboard' => [
-        'enabled'         => true,
-        'summary_stats'   => true,  // Ringkasan total produk, order, user, dll
         'quick_menu'      => true,  // Menu navigasi cepat (Grid modules)
     ],
 
@@ -121,13 +122,12 @@ return [
         'enabled'         => true,
         'edit'           => true,
         'create'          => true,
-        'read'            => true,
         'update'          => true,
         'delete'          => true,
         'upload_image'    => true,
         'set_price'       => true,
         'set_stock'       => true,
-        'set_download'    => false,  // Link Download/Key
+        'set_download'    => true,
         'assign_category' => true,
     ],
 
@@ -142,8 +142,6 @@ return [
     // Manajemen Order (Transaksi)
     'order_management' => [
         'enabled'         => true,
-        'view_all'        => true,   // Melihat semua pesanan
-        'filter_by_user'  => true,   // Filter berdasarkan user
         'manual_approval' => true,   // Ubah status Pending -> Paid
         'cancel_order'    => true,   // Batalkan Pesanan
     ],
@@ -152,6 +150,7 @@ return [
     'user_management' => [
         'enabled'         => true,
         'view_list'       => true,   // Melihat daftar user
+        'view_history'    => true,   // Lihat history transaksi user
         'delete_user'     => true,   // Hapus user
     ],
 

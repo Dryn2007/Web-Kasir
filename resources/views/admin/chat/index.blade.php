@@ -14,41 +14,44 @@
 
         <div class="h-[calc(100vh-65px)] bg-gray-50 dark:bg-[#0b0c15] flex overflow-hidden transition-colors duration-300">
 
-            <div
-                class="w-1/3 bg-indigo-400 dark:bg-[#1a1b26] border-r border-gray-200 dark:border-gray-800 flex flex-col transition-colors duration-300">
-                <div class="p-4 border-b border-gray-200 dark:border-gray-800">
-                    <h2 class="text-white dark:text-white font-bold brand-font text-lg">INBOX</h2>
-                </div>
-                <div class="overflow-y-auto flex-1 custom-scrollbar">
-                    @foreach($users as $user)
-                        <a href="{{ route('admin.chat.show', $user->id) }}"
-                            class="group flex items-center gap-3 p-4 border-b border-gray-200 dark:border-gray-800 hover:bg-indigo-200 dark:hover:bg-[#252630] transition {{ isset($activeUser) && $activeUser->id == $user->id ? 'bg-gray-100 dark:bg-[#252630] border-l-4 border-l-indigo-500' : '' }}">
-                            <div
-                                class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-700 dark:text-white font-bold shrink-0">
-                                {{ substr($user->name, 0, 1) }}
-                            </div>
-                            <div class="overflow-hidden">
-                                <div class="flex justify-between items-center mb-1">
-                                    <h4
-                                        class="text-white group-hover:text-black dark:text-white dark:group-hover:text-white font-bold text-sm truncate">
-                                        {{ $user->name }}
-                                    </h4>
-                                    @if($user->chats->last())
-                                        <span
-                                            class="text-[10px] text-white group-hover:text-black dark:text-gray-500 dark:group-hover:text-gray-500">{{ $user->chats->last()->created_at->format('H:i') }}</span>
-                                    @endif
+            @if (config('features.admin_chat.inbox_view'))
+                <div
+                    class="w-1/3 bg-indigo-400 dark:bg-[#1a1b26] border-r border-gray-200 dark:border-gray-800 flex flex-col transition-colors duration-300">
+                    <div class="p-4 border-b border-gray-200 dark:border-gray-800">
+                        <h2 class="text-white dark:text-white font-bold brand-font text-lg">INBOX</h2>
+                    </div>
+                    <div class="overflow-y-auto flex-1 custom-scrollbar">
+                        @foreach($users as $user)
+                            <a href="{{ route('admin.chat.show', $user->id) }}"
+                                class="group flex items-center gap-3 p-4 border-b border-gray-200 dark:border-gray-800 hover:bg-indigo-200 dark:hover:bg-[#252630] transition {{ isset($activeUser) && $activeUser->id == $user->id ? 'bg-gray-100 dark:bg-[#252630] border-l-4 border-l-indigo-500' : '' }}">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-700 dark:text-white font-bold shrink-0">
+                                    {{ substr($user->name, 0, 1) }}
                                 </div>
-                                <p
-                                    class="text-white group-hover:text-black dark:text-gray-400 dark:group-hover:text-gray-400 text-xs truncate">
-                                    {{ $user->chats->last()->message ?? 'No messages' }}
-                                </p>
-                            </div>
-                        </a>
-                    @endforeach
+                                <div class="overflow-hidden">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <h4
+                                            class="text-white group-hover:text-black dark:text-white dark:group-hover:text-white font-bold text-sm truncate">
+                                            {{ $user->name }}
+                                        </h4>
+                                        @if($user->chats->last())
+                                            <span
+                                                class="text-[10px] text-white group-hover:text-black dark:text-gray-500 dark:group-hover:text-gray-500">{{ $user->chats->last()->created_at->format('H:i') }}</span>
+                                        @endif
+                                    </div>
+                                    <p
+                                        class="text-white group-hover:text-black dark:text-gray-400 dark:group-hover:text-gray-400 text-xs truncate">
+                                        {{ $user->chats->last()->message ?? 'No messages' }}
+                                    </p>
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
                 </div>
-            </div>
+            @endif
 
-            <div class="w-2/3 flex flex-col bg-gray-50 dark:bg-[#0f1016] transition-colors duration-300">
+            <div
+                class="{{ config('features.admin_chat.inbox_view') ? 'w-2/3' : 'w-full' }} flex flex-col bg-gray-50 dark:bg-[#0f1016] transition-colors duration-300">
                 @if(isset($activeUser))
                     <div
                         class="p-4 bg-white dark:bg-[#1a1b26] border-b border-gray-200 dark:border-gray-800 flex items-center gap-3 transition-colors duration-300">
@@ -61,38 +64,46 @@
                         </div>
                     </div>
 
-                    <div class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar bg-gray-50 dark:bg-[#0f1016]"
-                        id="chatContainer">
-                        @foreach($chats as $chat)
-                            <div class="flex {{ $chat->is_admin ? 'justify-end' : 'justify-start' }}">
-                                <div
-                                    class="max-w-[70%] {{ $chat->is_admin ? 'bg-indigo-600 text-white rounded-l-lg rounded-br-lg' : 'bg-white dark:bg-[#252630] text-gray-800 dark:text-gray-200 rounded-r-lg rounded-bl-lg border border-gray-200 dark:border-gray-700' }} p-3 shadow-md">
-                                    <p class="text-sm">{{ $chat->message }}</p>
-                                    <span
-                                        class="text-[10px] {{ $chat->is_admin ? 'text-indigo-200' : 'text-gray-400 dark:text-gray-500' }} block text-right mt-1">
-                                        {{ $chat->created_at->format('H:i') }}
-                                    </span>
+                    @if (config('features.admin_chat.view_messages'))
+                        <div class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar bg-gray-50 dark:bg-[#0f1016]"
+                            id="chatContainer">
+                            @foreach($chats as $chat)
+                                <div class="flex {{ $chat->is_admin ? 'justify-end' : 'justify-start' }}">
+                                    <div
+                                        class="max-w-[70%] {{ $chat->is_admin ? 'bg-indigo-600 text-white rounded-l-lg rounded-br-lg' : 'bg-white dark:bg-[#252630] text-gray-800 dark:text-gray-200 rounded-r-lg rounded-bl-lg border border-gray-200 dark:border-gray-700' }} p-3 shadow-md">
+                                        <p class="text-sm">{{ $chat->message }}</p>
+                                        <span
+                                            class="text-[10px] {{ $chat->is_admin ? 'text-indigo-200' : 'text-gray-400 dark:text-gray-500' }} block text-right mt-1">
+                                            {{ $chat->created_at->format('H:i') }}
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
-                        @endforeach
-                    </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="flex-1 flex items-center justify-center text-gray-400 dark:text-gray-600">
+                            <p>Message viewing is disabled.</p>
+                        </div>
+                    @endif
 
-                    <div
-                        class="p-4 bg-white dark:bg-[#1a1b26] border-t border-gray-200 dark:border-gray-800 transition-colors duration-300">
-                        <form action="{{ route('admin.chat.reply', $activeUser->id) }}" method="POST" class="flex gap-2">
-                            @csrf
-                            <input type="text" name="message" placeholder="Type a reply..."
-                                class="flex-1 bg-gray-100 dark:bg-[#0f1016] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg px-4 py-2 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-colors"
-                                autocomplete="off" autofocus>
-                            <button type="submit"
-                                class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition shadow-md">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path
-                                        d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-                                </svg>
-                            </button>
-                        </form>
-                    </div>
+                    @if (config('features.admin_chat.reply_messages'))
+                        <div
+                            class="p-4 bg-white dark:bg-[#1a1b26] border-t border-gray-200 dark:border-gray-800 transition-colors duration-300">
+                            <form action="{{ route('admin.chat.reply', $activeUser->id) }}" method="POST" class="flex gap-2">
+                                @csrf
+                                <input type="text" name="message" placeholder="Type a reply..."
+                                    class="flex-1 bg-gray-100 dark:bg-[#0f1016] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg px-4 py-2 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-colors"
+                                    autocomplete="off" autofocus>
+                                <button type="submit"
+                                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition shadow-md">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path
+                                            d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
+                    @endif
 
                     <script>
                         // Auto scroll ke bawah

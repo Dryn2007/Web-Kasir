@@ -120,6 +120,7 @@
 
                         @if($order->status == 'pending')
                             <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
+                                @if (config('features.order_management.manual_approval'))
                                 <form action="{{ route('admin.orders.approve', $order->id) }}" method="POST" onsubmit="return confirm('Confirm payment manually?');">
                                     @csrf @method('PATCH')
                                     <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded shadow-lg transition flex justify-center items-center gap-2">
@@ -127,13 +128,16 @@
                                         APPROVE PAYMENT
                                     </button>
                                 </form>
+                                @endif
                                 
+                                @if (config('features.order_management.cancel_order'))
                                 <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" onsubmit="return confirm('Delete/Cancel this order permanently?');">
                                     @csrf @method('DELETE') <button type="submit" class="w-full bg-red-100 dark:bg-red-900/20 hover:bg-red-200 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-500/30 font-bold py-3 rounded transition flex justify-center items-center gap-2">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                                         CANCEL ORDER
                                     </button>
                                 </form>
+                                @endif
                             </div>
                         @endif
 

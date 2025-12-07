@@ -1,5 +1,5 @@
 <x-app-layout>
-    @if (config('features.about_page.enabled'))
+    @if (config('features.about_page'))
         <x-slot name="header">
             <div class="flex justify-between items-center">
                 <h2 class="font-black text-2xl text-gray-900 dark:text-white leading-tight brand-font tracking-wider">

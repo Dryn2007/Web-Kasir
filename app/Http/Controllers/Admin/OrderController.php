@@ -16,7 +16,7 @@ class OrderController extends Controller
             $query->where('user_id', $request->user_id);
         }
         // Ambil semua order, urutkan terbaru, beserta data usernya
-        $orders = Order::with('user')->latest()->paginate(10);
+        $orders = $query->paginate(10);
         return view('admin.orders.index', compact('orders'));
     }
 

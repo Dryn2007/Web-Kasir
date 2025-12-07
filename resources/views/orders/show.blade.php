@@ -64,6 +64,7 @@
                             
                             @if($order->status == 'paid')
                                 
+                                @if (config('features.order_history.digital_access'))
                                 <a href="{{ $item->product->download_url }}" target="_blank" class="w-full md:w-auto inline-flex items-center justify-center px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded text-sm group transition shadow-lg">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -71,6 +72,7 @@
                                     ACCESS KEY / DOWNLOAD
                                 </a>
 
+                                @if (config('features.order_history.copy_key_button'))
                                 <div class="relative w-full md:w-80 group">
                                     <div class="flex items-center bg-gray-100 dark:bg-[#050507] border border-gray-300 dark:border-gray-700 rounded overflow-hidden">
                                         <div class="pl-3 pr-2 text-gray-500">
@@ -88,6 +90,8 @@
                                         Link Copied!
                                     </div>
                                 </div>
+                                @endif
+                                @endif
 
                                 @php
                                     $existingReview = \App\Models\Review::where('user_id', Auth::id())->where('product_id', $item->product_id)->first();
@@ -96,6 +100,7 @@
                                 @if (config('features.review.enabled'))
                                     @if($existingReview)
                                         <div class="flex flex-col items-end gap-1 mt-1 w-full">
+                                            @if (config('features.show_rating_stars'))
                                             <div class="flex items-center gap-2 bg-gray-100 dark:bg-[#252630] px-3 py-1.5 rounded border border-gray-200 dark:border-gray-700">
                                                 <span class="text-[10px] text-gray-600 dark:text-gray-400 font-bold uppercase tracking-wider">Your Rating:</span>
                                                 <div class="flex text-yellow-500">
@@ -104,6 +109,7 @@
                                                     @endfor
                                                 </div>
                                             </div>
+                                            @endif
 
                                             @if($existingReview->admin_reply)
                                                 <div class="mt-2 bg-indigo-50 dark:bg-indigo-900/20 border-l-2 border-indigo-500 p-2 rounded-r w-full md:w-80">
@@ -186,6 +192,7 @@
                         <button type="button" onclick="closeReviewModal()" class="text-gray-400 hover:text-gray-500 dark:hover:text-white"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
                     </div>
                     <div class="mt-4">
+                        @if (config('features.review.rating_stars'))
                         <div class="mb-6 text-center">
                             <label class="block text-gray-500 dark:text-gray-400 text-xs font-bold mb-2 uppercase tracking-widest">Rating</label>
                             <div class="flex flex-row-reverse justify-center gap-2 group">
@@ -197,10 +204,15 @@
                                 @endfor
                             </div>
                         </div>
+                        @else
+                        <input type="hidden" name="rating" value="5" />
+                        @endif
+                        @if (config('features.review.comment'))
                         <div class="mb-4">
                             <label class="block text-gray-500 dark:text-gray-400 text-xs font-bold mb-2 uppercase tracking-widest">Your Review</label>
                             <textarea name="comment" rows="4" class="w-full bg-gray-50 dark:bg-[#0f1016] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded p-3 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none"></textarea>
                         </div>
+                        @endif
                     </div>
                     <div class="mt-6 flex justify-end gap-3">
                         <button type="button" onclick="closeReviewModal()" class="px-4 py-2 bg-transparent border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 rounded hover:text-gray-900 dark:hover:text-white hover:border-gray-400 text-sm font-bold transition">CANCEL</button>

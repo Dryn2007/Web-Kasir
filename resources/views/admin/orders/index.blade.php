@@ -16,7 +16,7 @@
             <div class="bg-white dark:bg-[#1a1b26] overflow-hidden shadow-lg dark:shadow-[0_0_20px_rgba(79,70,229,0.1)] sm:rounded-lg border border-gray-200 dark:border-gray-800 p-6 transition-colors duration-300">
 
                 <div class="flex justify-between items-center mb-6 border-b border-gray-200 dark:border-gray-700 pb-4">
-                    @if(request('user_id'))
+                    @if(request('user_id') && config('features.order_management.filter_by_user'))
                         <div>
                             <h3 class="text-lg font-bold text-gray-700 dark:text-gray-300">
                                 Transactions by: 
@@ -106,6 +106,7 @@
                                             </a>
 
                                             @if($order->status == 'pending')
+                                                @if (config('features.order_management.manual_approval'))
                                                 <form action="{{ route('admin.orders.approve', $order->id) }}" method="POST" onsubmit="return confirm('Manually approve this payment?');">
                                                     @csrf
                                                     @method('PATCH')
@@ -115,6 +116,19 @@
                                                         </svg>
                                                     </button>
                                                 </form>
+                                                @endif
+
+                                                @if (config('features.order_management.cancel_order'))
+                                                <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" onsubmit="return confirm('Cancel this order?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:text-red-500 dark:hover:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/40 p-2 rounded transition border border-red-200 dark:border-red-900/30" title="Cancel Order">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                                @endif
                                             @endif
 
                                         </td>

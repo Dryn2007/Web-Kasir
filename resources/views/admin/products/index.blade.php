@@ -127,6 +127,7 @@
 
                                         <td class="px-6 py-4">
                                             <div class="flex flex-col gap-1">
+                                                @if (config('features.show_rating_stars'))
                                                 <div class="flex items-center gap-2">
                                                     <div class="flex text-yellow-500">
                                                         <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
@@ -136,6 +137,7 @@
                                                     </span>
                                                     <span class="text-gray-400 dark:text-gray-500 text-[10px]">({{ $product->reviews_count }})</span>
                                                 </div>
+                                                @endif
                                                 
                                                 <div class="flex items-center gap-1 text-xs">
                                                     <span class="text-gray-600 dark:text-gray-400 font-bold">{{ $product->order_items_sum_quantity ?? 0 }}</span> <span class="text-gray-400 dark:text-gray-600">Sold</span>

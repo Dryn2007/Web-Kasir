@@ -79,6 +79,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders.index');
     Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
     Route::patch('/admin/orders/{id}/approve', [AdminOrderController::class, 'markAsPaid'])->name('admin.orders.approve');
+    Route::delete('/admin/orders/{id}', [AdminOrderController::class, 'destroy'])->name('admin.orders.destroy');
 
     // Manajemen User
     Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');

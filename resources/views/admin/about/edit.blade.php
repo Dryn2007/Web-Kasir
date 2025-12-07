@@ -28,48 +28,58 @@
                         @csrf
                         @method('PUT')
 
-                        <div class="mb-6">
-                            <label
-                                class="block text-gray-500 dark:text-gray-400 mb-2 font-bold text-xs uppercase tracking-wider">Page
-                                Title (Headline)</label>
-                            <input type="text" name="title" value="{{ $about->title }}"
-                                class="w-full bg-gray-50 dark:bg-[#0f1016] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder-gray-400 dark:placeholder-gray-600 transition font-bold text-lg">
-                        </div>
+                        @if (config('features.about_management.edit_title'))
+                            <div class="mb-6">
+                                <label
+                                    class="block text-gray-500 dark:text-gray-400 mb-2 font-bold text-xs uppercase tracking-wider">Page
+                                    Title (Headline)</label>
+                                <input type="text" name="title" value="{{ $about->title }}"
+                                    class="w-full bg-gray-50 dark:bg-[#0f1016] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder-gray-400 dark:placeholder-gray-600 transition font-bold text-lg">
+                            </div>
+                        @else
+                            <input type="hidden" name="title" value="{{ $about->title }}">
+                        @endif
 
-                        <div class="mb-6">
-                            <label
-                                class="block text-gray-500 dark:text-gray-400 mb-2 font-bold text-xs uppercase tracking-wider">Content
-                                / Story</label>
-                            <textarea name="content" rows="10"
-                                class="w-full bg-gray-50 dark:bg-[#0f1016] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder-gray-400 dark:placeholder-gray-600 transition leading-relaxed">{{ $about->content }}</textarea>
-                            <p class="text-xs text-gray-500 mt-2">Tips: Gunakan Enter untuk membuat paragraf baru.</p>
-                        </div>
+                        @if (config('features.about_management.edit_content'))
+                            <div class="mb-6">
+                                <label
+                                    class="block text-gray-500 dark:text-gray-400 mb-2 font-bold text-xs uppercase tracking-wider">Content
+                                    / Story</label>
+                                <textarea name="content" rows="10"
+                                    class="w-full bg-gray-50 dark:bg-[#0f1016] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder-gray-400 dark:placeholder-gray-600 transition leading-relaxed">{{ $about->content }}</textarea>
+                                <p class="text-xs text-gray-500 mt-2">Tips: Gunakan Enter untuk membuat paragraf baru.</p>
+                            </div>
+                        @else
+                            <input type="hidden" name="content" value="{{ $about->content }}">
+                        @endif
 
-                        <div
-                            class="mb-8 p-6 bg-gray-50 dark:bg-[#0f1016] rounded border border-gray-200 dark:border-gray-700 transition-colors">
-                            <label
-                                class="block text-gray-700 dark:text-gray-300 font-bold mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">HERO
-                                IMAGE</label>
+                        @if (config('features.about_management.edit_image'))
+                            <div
+                                class="mb-8 p-6 bg-gray-50 dark:bg-[#0f1016] rounded border border-gray-200 dark:border-gray-700 transition-colors">
+                                <label
+                                    class="block text-gray-700 dark:text-gray-300 font-bold mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">HERO
+                                    IMAGE</label>
 
-                            @if($about->image)
-                                <div class="mb-4">
-                                    <p class="text-xs text-gray-500 mb-2">Current Image:</p>
-                                    <img src="{{ asset('storage/' . $about->image) }}"
-                                        class="h-40 w-auto rounded border border-gray-300 dark:border-gray-600 object-cover shadow-sm">
-                                </div>
-                            @endif
+                                @if($about->image)
+                                    <div class="mb-4">
+                                        <p class="text-xs text-gray-500 mb-2">Current Image:</p>
+                                        <img src="{{ asset('storage/' . $about->image) }}"
+                                            class="h-40 w-auto rounded border border-gray-300 dark:border-gray-600 object-cover shadow-sm">
+                                    </div>
+                                @endif
 
-                            <label class="block text-gray-500 dark:text-gray-400 text-xs font-bold mb-2 uppercase">Upload
-                                New Image (Optional)</label>
-                            <input type="file" name="image"
-                                class="block w-full text-sm text-gray-500 dark:text-gray-400
-                                file:mr-4 file:py-2 file:px-4
-                                file:rounded-sm file:border-0
-                                file:text-xs file:font-semibold
-                                file:bg-indigo-600 file:text-white
-                                hover:file:bg-indigo-700
-                                cursor-pointer bg-white dark:bg-[#1a1b26] border border-gray-300 dark:border-gray-700 rounded p-1 transition-colors">
-                        </div>
+                                <label class="block text-gray-500 dark:text-gray-400 text-xs font-bold mb-2 uppercase">Upload
+                                    New Image (Optional)</label>
+                                <input type="file" name="image"
+                                    class="block w-full text-sm text-gray-500 dark:text-gray-400
+                                        file:mr-4 file:py-2 file:px-4
+                                        file:rounded-sm file:border-0
+                                        file:text-xs file:font-semibold
+                                        file:bg-indigo-600 file:text-white
+                                        hover:file:bg-indigo-700
+                                        cursor-pointer bg-white dark:bg-[#1a1b26] border border-gray-300 dark:border-gray-700 rounded p-1 transition-colors">
+                            </div>
+                        @endif
 
                         <div class="flex justify-end">
                             <button type="submit"

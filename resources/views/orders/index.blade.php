@@ -50,6 +50,7 @@
                                         </span>
                                     </div>
 
+                                    @if (config('features.order_history.show_status'))
                                     <div class="mt-4 sm:mt-0">
                                         @if($order->status == 'pending')
                                             <span class="inline-flex items-center gap-2 px-3 py-1 rounded bg-yellow-100 dark:bg-yellow-500/10 border border-yellow-200 dark:border-yellow-500/20 text-yellow-700 dark:text-yellow-400 text-xs font-bold uppercase tracking-wider animate-pulse">
@@ -65,6 +66,7 @@
                                             </span>
                                         @endif
                                     </div>
+                                    @endif
                                 </div>
 
                                 <div class="flex flex-col md:flex-row gap-6 items-center">

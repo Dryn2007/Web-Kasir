@@ -1,5 +1,6 @@
 <x-app-layout>
     @if (config('features.review_management.enabled'))
+    @if (config('features.review_management.view_all'))
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-black text-2xl text-gray-900 dark:text-white leading-tight brand-font tracking-wider">
@@ -39,15 +40,17 @@
                                                 <div class="text-indigo-600 dark:text-indigo-400 text-xs">by {{ $review->user->name }}</div>
                                             </div>
                                         </div>
+                                        @if (config('features.show_rating_stars'))
                                         <div class="flex text-yellow-500 mb-1">
                                             @for($i=1; $i<=5; $i++)
                                                 <svg class="w-3 h-3 {{ $i <= $review->rating ? 'fill-current' : 'text-gray-300 dark:text-gray-800 fill-current' }}" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                                             @endfor
                                         </div>
+                                        @endif
                                         <div class="text-gray-400 dark:text-gray-600 text-[10px]">{{ $review->created_at->format('d M Y, H:i') }}</div>
                                     </div>
 
-                                    <div class="w-full md:w-2/4">
+                                    <div class="w-full {{ (config('features.review_management.reply') || config('features.review_management.delete')) ? 'md:w-2/4' : 'md:w-3/4' }}">
                                         <p class="text-gray-700 dark:text-gray-300 text-sm italic">"{{ $review->comment }}"</p>
                                         
                                         @if($review->admin_reply)
@@ -58,20 +61,26 @@
                                         @endif
                                     </div>
 
+                                    @if (config('features.review_management.reply') || config('features.review_management.delete'))
                                     <div class="w-full md:w-1/4 flex flex-col items-end justify-center gap-2">
+                                        @if (config('features.review_management.reply'))
                                         <button onclick="openReplyModal('{{ $review->id }}', '{{ $review->user->name }}', `{{ $review->comment }}`)" 
                                                 class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 rounded transition flex items-center justify-center gap-2">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
                                             {{ $review->admin_reply ? 'Edit Reply' : 'Reply' }}
                                         </button>
+                                        @endif
 
+                                        @if (config('features.review_management.delete'))
                                         <form action="{{ route('admin.reviews.destroy', $review->id) }}" method="POST" onsubmit="return confirm('Delete this review?');" class="w-full">
                                             @csrf @method('DELETE')
                                             <button class="w-full bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-500 hover:bg-red-200 dark:hover:bg-red-900/40 text-xs font-bold py-2 rounded transition border border-red-200 dark:border-red-900/30">
                                                 Delete
                                             </button>
                                         </form>
+                                        @endif
                                     </div>
+                                    @endif
 
                                 </div>
                             </div>
@@ -87,6 +96,7 @@
         </div>
     </div>
 
+    @if (config('features.review_management.reply'))
     <div id="replyModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div class="fixed inset-0 bg-gray-900 bg-opacity-80 transition-opacity" onclick="closeReplyModal()"></div>
@@ -123,6 +133,18 @@
             document.getElementById('replyModal').classList.add('hidden');
         }
     </script>
+    @endif
+    @else
+    <div class="py-16 bg-gray-50 dark:bg-[#0b0c15] min-h-screen flex items-center justify-center">
+        <div class="text-center">
+            <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Access Denied</h1>
+            <p class="text-gray-500 dark:text-gray-400 mb-8">Viewing reviews is currently disabled.</p>
+            <a href="{{ route('admin.dashboard') }}" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded transition">
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+    @endif
     @else
     <div class="py-16 bg-gray-50 dark:bg-[#0b0c15] min-h-screen flex items-center justify-center">
         <div class="text-center">

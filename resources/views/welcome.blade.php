@@ -161,10 +161,12 @@
                                 {{ $product->category->name ?? 'GAME' }}
                             </span>
 
+                            @if (config('features.show_rating_stars'))
                             <div class="flex items-center gap-1 bg-white/80 dark:bg-black/40 backdrop-blur-md px-2 py-1 rounded-full border border-gray-200 dark:border-white/5 shadow-sm dark:shadow-none">
                                 <svg class="w-3 h-3 text-yellow-500 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                                 <span class="text-xs font-bold text-gray-800 dark:text-white">{{ $product->average_rating }}</span>
                             </div>
+                            @endif
                         </div>
 
                         <h3 class="text-lg font-bold text-black dark:text-white mb-1 leading-snug group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-1" title="{{ $product->name }}">

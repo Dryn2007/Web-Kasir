@@ -97,10 +97,12 @@
                                             <p class="text-xs text-green-600 dark:text-green-500 mt-1">In Stock</p>
                                         @endif
                                         
+                                        @if (config('features.cart.remove_item'))
                                         <form action="{{ route('cart.destroy', $cart->id) }}" method="POST" class="inline-block mt-2 md:hidden">
                                             @csrf @method('DELETE')
                                             <button type="submit" class="text-xs text-red-500 hover:text-red-700 underline">Remove</button>
                                         </form>
+                                        @endif
                                     </div>
                                 </div>
 
@@ -109,12 +111,16 @@
                                 </div>
 
                                 <div class="col-span-2 flex justify-center w-full">
+                                    @if (config('features.cart.update_quantity'))
                                     <form action="{{ route('cart.update', $cart->id) }}" method="POST" class="flex items-center">
                                         @csrf @method('PATCH')
                                         <input type="number" name="quantity" value="{{ $cart->quantity }}" min="1" max="{{ $cart->product->stock }}"
                                                class="w-16 bg-white dark:bg-[#1a1b26] border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-center rounded focus:ring-indigo-500 focus:border-indigo-500 p-1"
                                                onchange="this.form.submit()">
                                     </form>
+                                    @else
+                                    <span class="text-gray-600 dark:text-gray-400 font-mono">{{ $cart->quantity }}</span>
+                                    @endif
                                 </div>
 
                                 <div class="col-span-2 w-full flex justify-between md:justify-end items-center gap-4">
@@ -122,6 +128,7 @@
                                         Rp {{ number_format($subtotal) }}
                                     </span>
                                     
+                                    @if (config('features.cart.remove_item'))
                                     <form action="{{ route('cart.destroy', $cart->id) }}" method="POST" class="hidden md:block">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="text-gray-400 hover:text-red-500 transition p-2" title="Remove Item">
@@ -130,6 +137,7 @@
                                             </svg>
                                         </button>
                                     </form>
+                                    @endif
                                 </div>
 
                             </div>
