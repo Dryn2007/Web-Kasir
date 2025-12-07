@@ -1,104 +1,118 @@
 <x-app-layout>
-    <div class="relative overflow-hidden bg-gray-50 dark:bg-[#0f1016] transition-colors duration-300">
-        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
-            <div class="absolute top-20 left-20 w-96 h-96 bg-indigo-400 dark:bg-indigo-600 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[100px] opacity-20"></div>
-            <div class="absolute top-40 right-20 w-72 h-72 bg-purple-400 dark:bg-purple-600 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[100px] opacity-20"></div>
-        </div>
+    @if (config('features.landing_page.enabled'))
+        @if (config('features.landing_page.hero_section'))
+            <div class="relative overflow-hidden bg-gray-50 dark:bg-[#0f1016] transition-colors duration-300">
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
+                    <div class="absolute top-20 left-20 w-96 h-96 bg-indigo-400 dark:bg-indigo-600 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[100px] opacity-20"></div>
+                    <div class="absolute top-40 right-20 w-72 h-72 bg-purple-400 dark:bg-purple-600 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[100px] opacity-20"></div>
+                </div>
 
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
-            <h1 class="text-5xl md:text-7xl font-black text-gray-900 dark:text-white tracking-tighter mb-6 brand-font drop-shadow-sm dark:drop-shadow-lg transition-colors duration-300">
-                LEVEL UP YOUR <br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-cyan-500 dark:from-indigo-400 dark:to-cyan-400">DIGITAL LIBRARY</span>
-            </h1>
-            <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-600 dark:text-gray-400 font-light transition-colors duration-300">
-                Dapatkan Game Key, Software Original, dan Voucher Game termurah dengan pengiriman instan otomatis.
-            </p>
-            <div class="mt-10 flex justify-center gap-4">
-                <a href="#browse-games" class="px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-sm skew-x-[-10deg] transition shadow-lg hover:shadow-xl">
-                    <span class="skew-x-[10deg] inline-block">BROWSE GAMES</span>
-                </a>
+                <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
+                    <h1 class="text-5xl md:text-7xl font-black text-gray-900 dark:text-white tracking-tighter mb-6 brand-font drop-shadow-sm dark:drop-shadow-lg transition-colors duration-300">
+                        LEVEL UP YOUR <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-cyan-500 dark:from-indigo-400 dark:to-cyan-400">DIGITAL LIBRARY</span>
+                    </h1>
+                    <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-600 dark:text-gray-400 font-light transition-colors duration-300">
+                        Dapatkan Game Key, Software Original, dan Voucher Game termurah dengan pengiriman instan otomatis.
+                    </p>
+                    <div class="mt-10 flex justify-center gap-4">
+                        <a href="#browse-games" class="px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-sm skew-x-[-10deg] transition shadow-lg hover:shadow-xl">
+                            <span class="skew-x-[10deg] inline-block">BROWSE GAMES</span>
+                        </a>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
+        @endif
+    @endif
 
     <div id="browse-games" class="py-16 bg-white dark:bg-[#0b0c15] transition-colors duration-300">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-            <div class="mb-8 px-4 sm:px-0">
-                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3 brand-font transition-colors duration-300">
-                    <span class="w-1 h-8 bg-indigo-500 rounded-full shadow-[0_0_10px_#6366f1]"></span>
-                    TRENDING NOW
-                </h2>
-            </div>
+            @if (config('features.landing_page.trending_now'))
+                <div class="mb-8 px-4 sm:px-0">
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3 brand-font transition-colors duration-300">
+                        <span class="w-1 h-8 bg-indigo-500 rounded-full shadow-[0_0_10px_#6366f1]"></span>
+                        TRENDING NOW
+                    </h2>
+                </div>
+            @endif
 
-            <div class="sticky top-20 z-40 px-4 sm:px-0 mb-10">
-                <form action="{{ route('home') }}" method="GET">
-                    <input type="hidden" name="ref" value="filter">
-                    
-                    <div class="bg-white/90 dark:bg-[#1a1b26]/95 backdrop-blur-md border border-gray-200 dark:border-gray-700/50 rounded-xl p-1.5 flex flex-col md:flex-row gap-2 shadow-lg dark:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] transition-colors duration-300">
+            @if (config('features.search_filter.enabled'))
+                <div class="sticky top-20 z-40 px-4 sm:px-0 mb-10">
+                    <form action="{{ route('home') }}" method="GET">
+                        <input type="hidden" name="ref" value="filter">
                         
-                        <div class="relative w-full md:w-48 flex-shrink-0 group">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
-                                <svg class="w-4 h-4 text-gray-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
-                                </svg>
-                            </div>
-                            <select name="sort" onchange="this.form.submit()" 
-                                    class="w-full bg-gray-50 dark:bg-[#0f1016] text-gray-900 dark:text-gray-300 border border-gray-200 dark:border-gray-700/50 text-sm rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block pl-10 pr-8 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900 transition appearance-none font-bold">
-                                <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Newest</option>
-                                <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }} class="text-orange-600 dark:text-yellow-400">🔥 Popular</option>
-                                <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Price: Low</option>
-                                <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Price: High</option>
-                            </select>
-                            <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                            </div>
-                        </div>
-
-                        <div class="relative w-full md:w-48 flex-shrink-0 group">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
-                                <svg class="w-4 h-4 text-gray-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-                                </svg>
-                            </div>
-                            <select name="category" onchange="this.form.submit()" 
-                                    class="w-full bg-gray-50 dark:bg-[#0f1016] text-gray-900 dark:text-gray-300 border border-gray-200 dark:border-gray-700/50 text-sm rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block pl-10 pr-8 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900 transition appearance-none font-bold">
-                                <option value="">All Categories</option>
-                                @foreach($categories as $cat)
-                                    <option value="{{ $cat->slug }}" {{ request('category') == $cat->slug ? 'selected' : '' }}>
-                                        {{ $cat->name }} ({{ $cat->products_count }})
-                                    </option>
-                                @endforeach
-                            </select>
-                            <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                            </div>
-                        </div>
-
-                        <div class="relative w-full group">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 group-focus-within:text-indigo-600 dark:group-focus-within:text-indigo-400 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                            </div>
-                            <input type="text" name="search" id="search-input" value="{{ request('search') }}"
-                                class="w-full bg-gray-50 dark:bg-[#0f1016]/50 hover:bg-gray-100 dark:hover:bg-[#0f1016] focus:bg-white dark:focus:bg-[#0f1016] text-gray-900 dark:text-white border-transparent focus:border-indigo-500 text-sm rounded-lg focus:ring-0 block pl-10 p-3 placeholder:text-black dark:placeholder:text-white font-medium transition"
-                                placeholder="Search games..." autocomplete="off"
-                                onkeyup="fetchSuggestions(this.value)" onfocus="fetchSuggestions(this.value)">
+                        <div class="bg-white/90 dark:bg-[#1a1b26]/95 backdrop-blur-md border border-gray-200 dark:border-gray-700/50 rounded-xl p-1.5 flex flex-col md:flex-row gap-2 shadow-lg dark:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] transition-colors duration-300">
                             
-                            <div id="search-suggestions" class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1a1b26] border border-gray-200 dark:border-gray-700 rounded-lg shadow-2xl hidden overflow-hidden z-50">
-                                <ul id="suggestion-list" class="divide-y divide-gray-100 dark:divide-gray-800 text-sm"></ul>
-                            </div>
-                        </div>
+                            @if (config('features.search_filter.sorting'))
+                                <div class="relative w-full md:w-48 flex-shrink-0 group">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+                                        <svg class="w-4 h-4 text-gray-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+                                        </svg>
+                                    </div>
+                                    <select name="sort" onchange="this.form.submit()" 
+                                            class="w-full bg-gray-50 dark:bg-[#0f1016] text-gray-900 dark:text-gray-300 border border-gray-200 dark:border-gray-700/50 text-sm rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block pl-10 pr-8 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900 transition appearance-none font-bold">
+                                        <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Newest</option>
+                                        <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }} class="text-orange-600 dark:text-yellow-400">🔥 Popular</option>
+                                        <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Price: Low</option>
+                                        <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Price: High</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
+                                </div>
+                            @endif
 
-                        @if(request('search') || request('sort') || request('category'))
-                            <a href="{{ route('home') }}" class="flex-shrink-0 bg-red-100 dark:bg-red-500/10 hover:bg-red-200 dark:hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-500/30 rounded-lg w-10 flex items-center justify-center transition" title="Reset Filters">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                            </a>
-                        @endif
-                    </div>
-                </form>
-            </div>
+                            @if (config('features.search_filter.category_filter'))
+                                <div class="relative w-full md:w-48 flex-shrink-0 group">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+                                        <svg class="w-4 h-4 text-gray-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                                        </svg>
+                                    </div>
+                                    <select name="category" onchange="this.form.submit()" 
+                                            class="w-full bg-gray-50 dark:bg-[#0f1016] text-gray-900 dark:text-gray-300 border border-gray-200 dark:border-gray-700/50 text-sm rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block pl-10 pr-8 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900 transition appearance-none font-bold">
+                                        <option value="">All Categories</option>
+                                        @foreach($categories as $cat)
+                                            <option value="{{ $cat->slug }}" {{ request('category') == $cat->slug ? 'selected' : '' }}>
+                                                {{ $cat->name }} ({{ $cat->products_count }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if (config('features.search_filter.live_search'))
+                                <div class="relative w-full group">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 group-focus-within:text-indigo-600 dark:group-focus-within:text-indigo-400 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                    </div>
+                                    <input type="text" name="search" id="search-input" value="{{ request('search') }}"
+                                        class="w-full bg-gray-50 dark:bg-[#0f1016]/50 hover:bg-gray-100 dark:hover:bg-[#0f1016] focus:bg-white dark:focus:bg-[#0f1016] text-gray-900 dark:text-white border-transparent focus:border-indigo-500 text-sm rounded-lg focus:ring-0 block pl-10 p-3 placeholder:text-black dark:placeholder:text-white font-medium transition"
+                                        placeholder="Search games..." autocomplete="off"
+                                        onkeyup="fetchSuggestions(this.value)" onfocus="fetchSuggestions(this.value)">
+                                    
+                                    <div id="search-suggestions" class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1a1b26] border border-gray-200 dark:border-gray-700 rounded-lg shadow-2xl hidden overflow-hidden z-50">
+                                        <ul id="suggestion-list" class="divide-y divide-gray-100 dark:divide-gray-800 text-sm"></ul>
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if(request('search') || request('sort') || request('category'))
+                                <a href="{{ route('home') }}" class="flex-shrink-0 bg-red-100 dark:bg-red-500/10 hover:bg-red-200 dark:hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-500/30 rounded-lg w-10 flex items-center justify-center transition" title="Reset Filters">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                </a>
+                            @endif
+                        </div>
+                    </form>
+                </div>
+            @endif
 
             @if(request('search'))
                 <div class="mb-6 px-4 sm:px-0">

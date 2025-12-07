@@ -84,22 +84,47 @@ class ProductController extends Controller
     // Menyimpan data ke database
     public function store(Request $request)
     {
-        $request->validate([
+        // Build validation rules based on feature flags
+        $rules = [
             'name' => 'required',
-            'price' => 'required|numeric',
-            'stock' => 'required|integer',
+            'description' => 'nullable|string',
             'image' => 'nullable|image|max:2048',
             'image_url' => 'nullable|url',
-            'download_url' => 'required|url',
-            'category_id' => 'required|exists:categories,id',
-        ]);
+        ];
 
-        $data = $request->all();
+        // Conditional validation based on feature flags
+        if (config('features.product_management.set_price')) {
+            $rules['price'] = 'required|numeric';
+        }
+        if (config('features.product_management.set_stock')) {
+            $rules['stock'] = 'required|integer';
+        }
+        if (config('features.product_management.set_download')) {
+            $rules['download_url'] = 'required|url';
+        }
+        if (config('features.product_management.assign_category')) {
+            $rules['category_id'] = 'nullable|exists:categories,id';
+        }
 
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('products', 'public');
-        } elseif ($request->filled('image_url')) {
-            $data['image'] = $request->image_url;
+        $request->validate($rules);
+
+        // Build data array with defaults for disabled features
+        $data = [
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => config('features.product_management.set_price') ? $request->price : 0,
+            'stock' => config('features.product_management.set_stock') ? $request->stock : 0,
+            'download_url' => config('features.product_management.set_download') ? $request->download_url : '#',
+            'category_id' => config('features.product_management.assign_category') ? $request->category_id : null,
+        ];
+
+        // Handle image upload
+        if (config('features.product_management.upload_image')) {
+            if ($request->hasFile('image')) {
+                $data['image'] = $request->file('image')->store('products', 'public');
+            } elseif ($request->filled('image_url')) {
+                $data['image'] = $request->image_url;
+            }
         }
 
         Product::create($data);
@@ -117,30 +142,53 @@ class ProductController extends Controller
     // Update data ke database
     public function update(Request $request, Product $product)
     {
-        $request->validate([
+        // Build validation rules based on feature flags
+        $rules = [
             'name' => 'required',
-            'price' => 'required|numeric',
-            'stock' => 'required|integer',
+            'description' => 'nullable|string',
             'image' => 'nullable|image|max:2048',
             'image_url' => 'nullable|url',
-            'download_url' => 'required|url',
-            'category_id' => 'required|exists:categories,id',
-        ]);
+        ];
 
-        $data = $request->all();
+        // Conditional validation based on feature flags
+        if (config('features.product_management.set_price')) {
+            $rules['price'] = 'required|numeric';
+        }
+        if (config('features.product_management.set_stock')) {
+            $rules['stock'] = 'required|integer';
+        }
+        if (config('features.product_management.set_download')) {
+            $rules['download_url'] = 'required|url';
+        }
+        if (config('features.product_management.assign_category')) {
+            $rules['category_id'] = 'nullable|exists:categories,id';
+        }
 
-        if ($request->hasFile('image')) {
-            if ($product->image && !str_starts_with($product->image, 'http')) {
-                Storage::disk('public')->delete($product->image);
+        $request->validate($rules);
+
+        // Build data array - keep existing values for disabled features
+        $data = [
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => config('features.product_management.set_price') ? $request->price : $product->price,
+            'stock' => config('features.product_management.set_stock') ? $request->stock : $product->stock,
+            'download_url' => config('features.product_management.set_download') ? $request->download_url : $product->download_url,
+            'category_id' => config('features.product_management.assign_category') ? $request->category_id : $product->category_id,
+        ];
+
+        // Handle image upload
+        if (config('features.product_management.upload_image')) {
+            if ($request->hasFile('image')) {
+                if ($product->image && !str_starts_with($product->image, 'http')) {
+                    Storage::disk('public')->delete($product->image);
+                }
+                $data['image'] = $request->file('image')->store('products', 'public');
+            } elseif ($request->filled('image_url')) {
+                if ($product->image && !str_starts_with($product->image, 'http')) {
+                    Storage::disk('public')->delete($product->image);
+                }
+                $data['image'] = $request->image_url;
             }
-            $data['image'] = $request->file('image')->store('products', 'public');
-        } elseif ($request->filled('image_url')) {
-            if ($product->image && !str_starts_with($product->image, 'http')) {
-                Storage::disk('public')->delete($product->image);
-            }
-            $data['image'] = $request->image_url;
-        } else {
-            unset($data['image']);
         }
 
         $product->update($data);

@@ -38,17 +38,21 @@
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex items-center">
-                    <a href="{{ route('about') }}"
-                        class="text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md font-bold text-sm transition {{ request()->routeIs('about') ? 'text-indigo-600 dark:text-indigo-400' : '' }}">
-                        About Us
-                    </a>
+                    @if (config('features.about_page'))
+                        <a href="{{ route('about') }}"
+                            class="text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md font-bold text-sm transition {{ request()->routeIs('about') ? 'text-indigo-600 dark:text-indigo-400' : '' }}">
+                            About Us
+                        </a>
+                    @endif
 
                     @auth
                         @if(Auth::user()->role !== 'admin')
-                            <a href="{{ route('orders.index') }}"
-                                class="text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 px-3 py-2 rounded-md font-bold text-sm transition {{ request()->routeIs('orders.index') ? 'text-indigo-600 dark:text-indigo-400' : '' }}">
-                                {{ __('Riwayat Pesanan') }}
-                            </a>
+                            @if (config('features.order_history.enabled'))
+                                <a href="{{ route('orders.index') }}"
+                                    class="text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 px-3 py-2 rounded-md font-bold text-sm transition {{ request()->routeIs('orders.index') ? 'text-indigo-600 dark:text-indigo-400' : '' }}">
+                                    {{ __('Riwayat Pesanan') }}
+                                </a>
+                            @endif
                         @endif
                     @endauth
                 </div>
@@ -66,23 +70,25 @@
 
                 @auth
                     @if(Auth::user()->role !== 'admin')
-                        <a href="{{ route('cart.index') }}"
-                            class="relative group mr-6 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition p-2">
-                            <div
-                                class="absolute inset-0 bg-indigo-500 rounded-full opacity-0 group-hover:opacity-20 transition blur-md">
-                            </div>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 relative" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
-                            @if(Auth::user()->carts->count() > 0)
-                                <span
-                                    class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded border-2 border-white dark:border-[#0f1016]">
-                                    {{ Auth::user()->carts->count() }}
-                                </span>
-                            @endif
-                        </a>
+                        @if (config('features.cart.enabled'))
+                            <a href="{{ route('cart.index') }}"
+                                class="relative group mr-6 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition p-2">
+                                <div
+                                    class="absolute inset-0 bg-indigo-500 rounded-full opacity-0 group-hover:opacity-20 transition blur-md">
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 relative" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                @if(Auth::user()->carts->count() > 0)
+                                    <span
+                                        class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded border-2 border-white dark:border-[#0f1016]">
+                                        {{ Auth::user()->carts->count() }}
+                                    </span>
+                                @endif
+                            </a>
+                        @endif
                     @endif
 
                     <x-dropdown align="right" width="48">
@@ -121,9 +127,11 @@
                     </x-dropdown>
                 @else
                     <div class="flex items-center gap-4">
-                        <a href="{{ route('login') }}"
-                            class="text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-bold transition text-sm">LOGIN</a>
-                        @if (Route::has('register'))
+                        @if (config('features.auth.login'))
+                            <a href="{{ route('login') }}"
+                                class="text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-bold transition text-sm">LOGIN</a>
+                        @endif
+                        @if (config('features.auth.register') && Route::has('register'))
                             <a href="{{ route('register') }}"
                                 class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-sm font-bold skew-x-[-10deg] transition shadow-lg hover:shadow-xl text-sm">
                                 <span class="skew-x-[10deg] inline-block">JOIN NOW</span>
@@ -151,10 +159,12 @@
     <div :class="{'block': open, 'hidden': ! open}"
         class="hidden sm:hidden bg-white dark:bg-[#1a1b26] border-t border-gray-200 dark:border-gray-800 transition-colors duration-300">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('about')" :active="request()->routeIs('about')"
-                class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-indigo-900/50">
-                {{ __('About Us') }}
-            </x-responsive-nav-link>
+            @if (config('features.about_page'))
+                <x-responsive-nav-link :href="route('about')" :active="request()->routeIs('about')"
+                    class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-indigo-900/50">
+                    {{ __('About Us') }}
+                </x-responsive-nav-link>
+            @endif
 
             @auth
                 @if(Auth::user()->role === 'admin')
@@ -167,19 +177,23 @@
                         class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-indigo-900/50">
                         {{ __('Dashboard') }}
                     </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('orders.index')" :active="request()->routeIs('orders.index')"
-                        class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-indigo-900/50">
-                        {{ __('Riwayat Pesanan') }}
-                    </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.index')"
-                        class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-indigo-900/50 flex justify-between items-center">
-                        <span>{{ __('Keranjang Belanja') }}</span>
-                        @if(Auth::user()->carts->count() > 0)
-                            <span
-                                class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">{{ Auth::user()->carts->count() }}
-                                Item</span>
-                        @endif
-                    </x-responsive-nav-link>
+                    @if (config('features.order_history.enabled'))
+                        <x-responsive-nav-link :href="route('orders.index')" :active="request()->routeIs('orders.index')"
+                            class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-indigo-900/50">
+                            {{ __('Riwayat Pesanan') }}
+                        </x-responsive-nav-link>
+                    @endif
+                    @if (config('features.cart.enabled'))
+                        <x-responsive-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.index')"
+                            class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-indigo-900/50 flex justify-between items-center">
+                            <span>{{ __('Keranjang Belanja') }}</span>
+                            @if(Auth::user()->carts->count() > 0)
+                                <span
+                                    class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">{{ Auth::user()->carts->count() }}
+                                    Item</span>
+                            @endif
+                        </x-responsive-nav-link>
+                    @endif
                 @endif
             @endauth
         </div>
@@ -202,9 +216,11 @@
                 </div>
             @else
                 <div class="mt-3 space-y-1 p-4">
-                    <x-responsive-nav-link :href="route('login')"
-                        class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800">{{ __('Log in') }}</x-responsive-nav-link>
-                    @if (Route::has('register'))
+                    @if (config('features.auth.login'))
+                        <x-responsive-nav-link :href="route('login')"
+                            class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800">{{ __('Log in') }}</x-responsive-nav-link>
+                    @endif
+                    @if (config('features.auth.register') && Route::has('register'))
                         <x-responsive-nav-link :href="route('register')"
                             class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-bold hover:bg-indigo-50 dark:hover:bg-indigo-900/10">{{ __('Register') }}</x-responsive-nav-link>
                     @endif

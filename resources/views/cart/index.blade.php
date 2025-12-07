@@ -1,4 +1,5 @@
 <x-app-layout>
+    @if (config('features.cart.enabled'))
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-black text-2xl text-gray-900 dark:text-white leading-tight brand-font tracking-wider">
@@ -151,9 +152,11 @@
                                     FIX STOCK ISSUE TO CHECKOUT
                                 </button>
                             @else
-                                <a href="{{ route('checkout.index') }}" class="inline-block w-full md:w-auto text-center bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-sm skew-x-[-10deg] transition shadow-lg hover:shadow-xl">
-                                    <span class="skew-x-[10deg]">PROCEED TO CHECKOUT</span>
-                                </a>
+                                @if (config('features.checkout.enabled'))
+                                    <a href="{{ route('checkout.index') }}" class="inline-block w-full md:w-auto text-center bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-sm skew-x-[-10deg] transition shadow-lg hover:shadow-xl">
+                                        <span class="skew-x-[10deg]">PROCEED TO CHECKOUT</span>
+                                    </a>
+                                @endif
                             @endif
                         </div>
                     </div>
@@ -163,4 +166,15 @@
             </div>
         </div>
     </div>
+    @else
+    <div class="py-16 bg-gray-50 dark:bg-[#0b0c15] min-h-screen flex items-center justify-center">
+        <div class="text-center">
+            <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Cart Not Available</h1>
+            <p class="text-gray-500 dark:text-gray-400 mb-8">This feature is currently disabled.</p>
+            <a href="{{ route('home') }}" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded transition">
+                Back to Home
+            </a>
+        </div>
+    </div>
+    @endif
 </x-app-layout>

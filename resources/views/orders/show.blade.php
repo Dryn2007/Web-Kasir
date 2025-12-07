@@ -93,35 +93,39 @@
                                     $existingReview = \App\Models\Review::where('user_id', Auth::id())->where('product_id', $item->product_id)->first();
                                 @endphp
 
-                                @if($existingReview)
-                                    <div class="flex flex-col items-end gap-1 mt-1 w-full">
-                                        <div class="flex items-center gap-2 bg-gray-100 dark:bg-[#252630] px-3 py-1.5 rounded border border-gray-200 dark:border-gray-700">
-                                            <span class="text-[10px] text-gray-600 dark:text-gray-400 font-bold uppercase tracking-wider">Your Rating:</span>
-                                            <div class="flex text-yellow-500">
-                                                @for($i=1; $i<=5; $i++)
-                                                    <svg class="w-3 h-3 {{ $i <= $existingReview->rating ? 'fill-current' : 'text-gray-400 dark:text-gray-600 fill-current' }}" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                                                @endfor
-                                            </div>
-                                        </div>
-
-                                        @if($existingReview->admin_reply)
-                                            <div class="mt-2 bg-indigo-50 dark:bg-indigo-900/20 border-l-2 border-indigo-500 p-2 rounded-r w-full md:w-80">
-                                                <div class="flex items-center gap-2 mb-1">
-                                                    <span class="bg-indigo-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">ADMIN REPLY</span>
-                                                    <span class="text-gray-500 text-[10px]">{{ \Carbon\Carbon::parse($existingReview->reply_at)->diffForHumans() }}</span>
+                                @if (config('features.review.enabled'))
+                                    @if($existingReview)
+                                        <div class="flex flex-col items-end gap-1 mt-1 w-full">
+                                            <div class="flex items-center gap-2 bg-gray-100 dark:bg-[#252630] px-3 py-1.5 rounded border border-gray-200 dark:border-gray-700">
+                                                <span class="text-[10px] text-gray-600 dark:text-gray-400 font-bold uppercase tracking-wider">Your Rating:</span>
+                                                <div class="flex text-yellow-500">
+                                                    @for($i=1; $i<=5; $i++)
+                                                        <svg class="w-3 h-3 {{ $i <= $existingReview->rating ? 'fill-current' : 'text-gray-400 dark:text-gray-600 fill-current' }}" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                                    @endfor
                                                 </div>
-                                                <p class="text-gray-700 dark:text-gray-300 text-xs italic">"{{ $existingReview->admin_reply }}"</p>
                                             </div>
+
+                                            @if($existingReview->admin_reply)
+                                                <div class="mt-2 bg-indigo-50 dark:bg-indigo-900/20 border-l-2 border-indigo-500 p-2 rounded-r w-full md:w-80">
+                                                    <div class="flex items-center gap-2 mb-1">
+                                                        <span class="bg-indigo-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">ADMIN REPLY</span>
+                                                        <span class="text-gray-500 text-[10px]">{{ \Carbon\Carbon::parse($existingReview->reply_at)->diffForHumans() }}</span>
+                                                    </div>
+                                                    <p class="text-gray-700 dark:text-gray-300 text-xs italic">"{{ $existingReview->admin_reply }}"</p>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @else
+                                        @if (config('features.review.write_review'))
+                                            <button onclick="openReviewModal('{{ $item->product->id }}', '{{ $item->product->name }}')" 
+                                                    class="w-full md:w-auto mt-1 inline-flex items-center justify-center px-4 py-1.5 border border-yellow-500/50 text-yellow-600 dark:text-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-600/10 font-bold rounded text-xs transition">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                                </svg>
+                                                RATE GAME
+                                            </button>
                                         @endif
-                                    </div>
-                                @else
-                                    <button onclick="openReviewModal('{{ $item->product->id }}', '{{ $item->product->name }}')" 
-                                            class="w-full md:w-auto mt-1 inline-flex items-center justify-center px-4 py-1.5 border border-yellow-500/50 text-yellow-600 dark:text-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-600/10 font-bold rounded text-xs transition">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                        </svg>
-                                        RATE GAME
-                                    </button>
+                                    @endif
                                 @endif
 
                             @elseif($order->status == 'pending')

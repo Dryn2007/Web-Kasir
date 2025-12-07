@@ -172,6 +172,7 @@
                 </div>
             </div>
 
+            @if (config('features.review.enabled'))
             <div
                 class="bg-white dark:bg-[#1a1b26] rounded-lg border border-gray-200 dark:border-gray-800 shadow-lg p-6 transition-colors duration-300">
 
@@ -345,6 +346,7 @@
 
                 </div>
             </div>
+            @endif
 
         </div>
     </div>

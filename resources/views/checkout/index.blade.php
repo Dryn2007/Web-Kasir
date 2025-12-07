@@ -1,4 +1,5 @@
 <x-app-layout>
+    @if (config('features.checkout.enabled'))
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-black text-2xl text-gray-900 dark:text-white leading-tight brand-font tracking-wider">
@@ -69,60 +70,66 @@
                                 Payment Method</label>
 
                             <div class="grid grid-cols-1 gap-3">
-                                <label
-                                    class="payment-label flex items-center justify-between p-4 border rounded cursor-pointer transition group"
-                                    id="label-qris">
-                                    <div class="flex items-center">
-                                        <input type="radio" name="payment_method" value="qris"
-                                            class="mr-4 text-indigo-600 focus:ring-indigo-500 bg-gray-100 dark:bg-gray-900 border-gray-300 dark:border-gray-600"
-                                            checked onchange="updatePaymentUI()">
-                                        <div>
-                                            <span
-                                                class="font-bold block text-sm text-gray-800 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400">QRIS
-                                                (Instant)</span>
-                                            <span class="text-xs text-gray-500">Scan via GoPay, OVO, Dana</span>
+                                @if (config('features.checkout.payment_methods.qris'))
+                                    <label
+                                        class="payment-label flex items-center justify-between p-4 border rounded cursor-pointer transition group"
+                                        id="label-qris">
+                                        <div class="flex items-center">
+                                            <input type="radio" name="payment_method" value="qris"
+                                                class="mr-4 text-indigo-600 focus:ring-indigo-500 bg-gray-100 dark:bg-gray-900 border-gray-300 dark:border-gray-600"
+                                                checked onchange="updatePaymentUI()">
+                                            <div>
+                                                <span
+                                                    class="font-bold block text-sm text-gray-800 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400">QRIS
+                                                    (Instant)</span>
+                                                <span class="text-xs text-gray-500">Scan via GoPay, OVO, Dana</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div
-                                        class="bg-white p-1 rounded h-8 w-12 flex items-center justify-center border border-gray-200">
-                                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/1200px-Logo_QRIS.svg.png"
-                                            alt="QRIS" class="h-full object-contain">
-                                    </div>
-                                </label>
+                                        <div
+                                            class="bg-white p-1 rounded h-8 w-12 flex items-center justify-center border border-gray-200">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/1200px-Logo_QRIS.svg.png"
+                                                alt="QRIS" class="h-full object-contain">
+                                        </div>
+                                    </label>
+                                @endif
 
-                                <label
-                                    class="payment-label flex items-center justify-between p-4 border rounded cursor-pointer transition group"
-                                    id="label-gopay">
-                                    <div class="flex items-center">
-                                        <input type="radio" name="payment_method" value="gopay"
-                                            class="mr-4 text-indigo-600 focus:ring-indigo-500 bg-gray-100 dark:bg-gray-900 border-gray-300 dark:border-gray-600"
-                                            onchange="updatePaymentUI()">
-                                        <span
-                                            class="font-bold text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white">GoPay</span>
-                                    </div>
-                                    <div
-                                        class="bg-white p-1 rounded h-8 w-12 flex items-center justify-center border border-gray-200">
-                                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gopay_logo.svg/2560px-Gopay_logo.svg.png"
-                                            alt="GoPay" class="h-full object-contain">
-                                    </div>
-                                </label>
+                                @if (config('features.checkout.payment_methods.gopay'))
+                                    <label
+                                        class="payment-label flex items-center justify-between p-4 border rounded cursor-pointer transition group"
+                                        id="label-gopay">
+                                        <div class="flex items-center">
+                                            <input type="radio" name="payment_method" value="gopay"
+                                                class="mr-4 text-indigo-600 focus:ring-indigo-500 bg-gray-100 dark:bg-gray-900 border-gray-300 dark:border-gray-600"
+                                                onchange="updatePaymentUI()">
+                                            <span
+                                                class="font-bold text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white">GoPay</span>
+                                        </div>
+                                        <div
+                                            class="bg-white p-1 rounded h-8 w-12 flex items-center justify-center border border-gray-200">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gopay_logo.svg/2560px-Gopay_logo.svg.png"
+                                                alt="GoPay" class="h-full object-contain">
+                                        </div>
+                                    </label>
+                                @endif
 
-                                <label
-                                    class="payment-label flex items-center justify-between p-4 border rounded cursor-pointer transition group"
-                                    id="label-dana">
-                                    <div class="flex items-center">
-                                        <input type="radio" name="payment_method" value="dana"
-                                            class="mr-4 text-indigo-600 focus:ring-indigo-500 bg-gray-100 dark:bg-gray-900 border-gray-300 dark:border-gray-600"
-                                            onchange="updatePaymentUI()">
-                                        <span
-                                            class="font-bold text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white">Dana</span>
-                                    </div>
-                                    <div
-                                        class="bg-white p-1 rounded h-8 w-12 flex items-center justify-center border border-gray-200">
-                                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/2560px-Logo_dana_blue.svg.png"
-                                            alt="Dana" class="h-full object-contain">
-                                    </div>
-                                </label>
+                                @if (config('features.checkout.payment_methods.dana'))
+                                    <label
+                                        class="payment-label flex items-center justify-between p-4 border rounded cursor-pointer transition group"
+                                        id="label-dana">
+                                        <div class="flex items-center">
+                                            <input type="radio" name="payment_method" value="dana"
+                                                class="mr-4 text-indigo-600 focus:ring-indigo-500 bg-gray-100 dark:bg-gray-900 border-gray-300 dark:border-gray-600"
+                                                onchange="updatePaymentUI()">
+                                            <span
+                                                class="font-bold text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white">Dana</span>
+                                        </div>
+                                        <div
+                                            class="bg-white p-1 rounded h-8 w-12 flex items-center justify-center border border-gray-200">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/2560px-Logo_dana_blue.svg.png"
+                                                alt="Dana" class="h-full object-contain">
+                                        </div>
+                                    </label>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -217,4 +224,15 @@
             updatePaymentUI();
         });
     </script>
+    @else
+    <div class="py-16 bg-gray-50 dark:bg-[#0b0c15] min-h-screen flex items-center justify-center">
+        <div class="text-center">
+            <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Checkout Not Available</h1>
+            <p class="text-gray-500 dark:text-gray-400 mb-8">Checkout is currently disabled.</p>
+            <a href="{{ route('home') }}" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded transition">
+                Back to Home
+            </a>
+        </div>
+    </div>
+    @endif
 </x-app-layout>

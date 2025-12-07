@@ -1,140 +1,163 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-black text-2xl text-gray-900 dark:text-white leading-tight brand-font tracking-wider">
-                ADD <span class="text-indigo-600 dark:text-indigo-500">PRODUCT</span>
-            </h2>
-            <a href="{{ route('admin.products.index') }}"
-                class="text-sm font-bold text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition">
-                &larr; BACK TO LIST
-            </a>
-        </div>
-    </x-slot>
+    @if (config('features.product_management.enabled') && config('features.product_management.create'))
+        <x-slot name="header">
+            <div class="flex justify-between items-center">
+                <h2 class="font-black text-2xl text-gray-900 dark:text-white leading-tight brand-font tracking-wider">
+                    ADD <span class="text-indigo-600 dark:text-indigo-500">PRODUCT</span>
+                </h2>
+                <a href="{{ route('admin.products.index') }}"
+                    class="text-sm font-bold text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition">
+                    &larr; BACK TO LIST
+                </a>
+            </div>
+        </x-slot>
 
-    <div class="py-12 bg-gray-50 dark:bg-[#0b0c15] min-h-screen transition-colors duration-300">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div
-                class="bg-white dark:bg-[#1a1b26] overflow-hidden shadow-lg dark:shadow-[0_0_20px_rgba(79,70,229,0.1)] sm:rounded-lg border border-gray-200 dark:border-gray-800 p-8 transition-colors duration-300">
+        <div class="py-12 bg-gray-50 dark:bg-[#0b0c15] min-h-screen transition-colors duration-300">
+            <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+                <div
+                    class="bg-white dark:bg-[#1a1b26] overflow-hidden shadow-lg dark:shadow-[0_0_20px_rgba(79,70,229,0.1)] sm:rounded-lg border border-gray-200 dark:border-gray-800 p-8 transition-colors duration-300">
 
-                <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
+                    <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                        <div class="mb-4 col-span-2">
-                            <label
-                                class="block text-gray-500 dark:text-gray-400 mb-2 font-bold text-xs uppercase tracking-wider">Product
-                                Name</label>
-                            <input type="text" name="name"
-                                class="w-full bg-gray-50 dark:bg-[#0f1016] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder-gray-400 dark:placeholder-gray-600 transition"
-                                placeholder="e.g. Elden Ring" required>
-                        </div>
-
-                        <div class="mb-4">
-                            <label
-                                class="block text-gray-500 dark:text-gray-400 mb-2 font-bold text-xs uppercase tracking-wider">Price
-                                (IDR)</label>
-                            <input type="number" name="price"
-                                class="w-full bg-gray-50 dark:bg-[#0f1016] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder-gray-400 dark:placeholder-gray-600 transition"
-                                placeholder="e.g. 599000" required>
-                        </div>
-
-                        <div class="mb-4">
-                            <label
-                                class="block text-gray-500 dark:text-gray-400 mb-2 font-bold text-xs uppercase tracking-wider">Stock
-                                Quantity</label>
-                            <input type="number" name="stock"
-                                class="w-full bg-gray-50 dark:bg-[#0f1016] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder-gray-400 dark:placeholder-gray-600 transition"
-                                placeholder="e.g. 100" required>
-                        </div>
-
-                        <div class="mb-4">
-                            <label
-                                class="block text-gray-500 dark:text-gray-400 text-xs font-bold mb-2">CATEGORY</label>
-                            <select name="category_id"
-                                class="w-full bg-gray-50 dark:bg-[#0f1016] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded p-2 focus:ring-indigo-500 focus:border-indigo-500">
-                                <option value="">-- Select Category --</option>
-                                @foreach($categories as $cat)
-                                    <option value="{{ $cat->id }}" {{ old('category_id', $product->category_id ?? '') == $cat->id ? 'selected' : '' }}>
-                                        {{ $cat->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                    </div>
-
-                    <div class="mb-6">
-                        <label
-                            class="block text-gray-500 dark:text-gray-400 mb-2 font-bold text-xs uppercase tracking-wider">Description</label>
-                        <textarea name="description" rows="4"
-                            class="w-full bg-gray-50 dark:bg-[#0f1016] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder-gray-400 dark:placeholder-gray-600 transition"
-                            placeholder="Enter product description here..."></textarea>
-                    </div>
-
-                    <div class="mb-6">
-                        <label
-                            class="block text-gray-500 dark:text-gray-400 mb-2 font-bold text-xs uppercase tracking-wider">Download
-                            Link
-                            / Access Key</label>
-                        <input type="url" name="download_url"
-                            class="w-full bg-gray-50 dark:bg-[#0f1016] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder-gray-400 dark:placeholder-gray-600 transition font-mono text-sm"
-                            placeholder="https://store.steampowered.com/app/..." required>
-                        <p class="text-xs text-gray-500 mt-2">Enter the direct download link, Steam Store link, or
-                            Google Drive URL.</p>
-                    </div>
-
-                    <div
-                        class="mb-8 p-6 bg-gray-50 dark:bg-[#0f1016] rounded border border-gray-200 dark:border-gray-700">
-                        <label
-                            class="block text-gray-700 dark:text-gray-300 font-bold mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">PRODUCT
-                            IMAGE</label>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                            <div>
+                            <div class="mb-4 col-span-2">
                                 <label
-                                    class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase mb-2 block">Option
-                                    1: Upload
-                                    File</label>
-                                <input type="file" name="image"
-                                    class="block w-full text-sm text-gray-500 dark:text-gray-400
-                                file:mr-4 file:py-2 file:px-4
-                                file:rounded-sm file:border-0
-                                file:text-xs file:font-semibold
-                                file:bg-indigo-600 file:text-white
-                                hover:file:bg-indigo-700
-                                cursor-pointer bg-white dark:bg-[#1a1b26] border border-gray-300 dark:border-gray-700 rounded p-1">
+                                    class="block text-gray-500 dark:text-gray-400 mb-2 font-bold text-xs uppercase tracking-wider">Product
+                                    Name</label>
+                                <input type="text" name="name"
+                                    class="w-full bg-gray-50 dark:bg-[#0f1016] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder-gray-400 dark:placeholder-gray-600 transition"
+                                    placeholder="e.g. Elden Ring" required>
                             </div>
-                            <div>
-                                <label
-                                    class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase mb-2 block">Option
-                                    2: Image
-                                    URL</label>
-                                <input type="url" name="image_url"
-                                    class="w-full bg-white dark:bg-[#1a1b26] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded p-2 text-sm focus:outline-none focus:border-indigo-500 placeholder-gray-400 dark:placeholder-gray-600"
-                                    placeholder="https://example.com/image.jpg">
-                            </div>
+
+                            @if (config('features.product_management.set_price'))
+                                <div class="mb-4">
+                                    <label
+                                        class="block text-gray-500 dark:text-gray-400 mb-2 font-bold text-xs uppercase tracking-wider">Price
+                                        (IDR)</label>
+                                    <input type="number" name="price"
+                                        class="w-full bg-gray-50 dark:bg-[#0f1016] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder-gray-400 dark:placeholder-gray-600 transition"
+                                        placeholder="e.g. 599000" required>
+                                </div>
+                            @endif
+
+                            @if (config('features.product_management.set_stock'))
+                                <div class="mb-4">
+                                    <label
+                                        class="block text-gray-500 dark:text-gray-400 mb-2 font-bold text-xs uppercase tracking-wider">Stock
+                                        Quantity</label>
+                                    <input type="number" name="stock"
+                                        class="w-full bg-gray-50 dark:bg-[#0f1016] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder-gray-400 dark:placeholder-gray-600 transition"
+                                        placeholder="e.g. 100" required>
+                                </div>
+                            @endif
+
+                            @if (config('features.product_management.assign_category'))
+                                <div class="mb-4">
+                                    <label
+                                        class="block text-gray-500 dark:text-gray-400 text-xs font-bold mb-2">CATEGORY</label>
+                                    <select name="category_id"
+                                        class="w-full bg-gray-50 dark:bg-[#0f1016] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded p-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                        <option value="">-- Select Category --</option>
+                                        @foreach($categories as $cat)
+                                            <option value="{{ $cat->id }}" {{ old('category_id', $product->category_id ?? '') == $cat->id ? 'selected' : '' }}>
+                                                {{ $cat->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
+
                         </div>
-                    </div>
 
-                    <div class="flex justify-end gap-4">
-                        <a href="{{ route('admin.products.index') }}"
-                            class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 font-bold rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition text-sm">CANCEL</a>
+                        <div class="mb-6">
+                            <label
+                                class="block text-gray-500 dark:text-gray-400 mb-2 font-bold text-xs uppercase tracking-wider">Description</label>
+                            <textarea name="description" rows="4"
+                                class="w-full bg-gray-50 dark:bg-[#0f1016] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder-gray-400 dark:placeholder-gray-600 transition"
+                                placeholder="Enter product description here..."></textarea>
+                        </div>
 
-                        <button type="submit"
-                            class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded font-bold shadow-lg dark:shadow-[0_0_15px_rgba(79,70,229,0.4)] hover:shadow-xl dark:hover:shadow-[0_0_25px_rgba(79,70,229,0.6)] transition text-sm flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 13l4 4L19 7" />
-                            </svg>
-                            SAVE PRODUCT
-                        </button>
-                    </div>
+                        @if (config('features.product_management.set_download'))
+                            <div class="mb-6">
+                                <label
+                                    class="block text-gray-500 dark:text-gray-400 mb-2 font-bold text-xs uppercase tracking-wider">Download
+                                    Link
+                                    / Access Key</label>
+                                <input type="url" name="download_url"
+                                    class="w-full bg-gray-50 dark:bg-[#0f1016] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder-gray-400 dark:placeholder-gray-600 transition font-mono text-sm"
+                                    placeholder="https://store.steampowered.com/app/..." required>
+                                <p class="text-xs text-gray-500 mt-2">Enter the direct download link, Steam Store link, or
+                                    Google Drive URL.</p>
+                            </div>
+                        @endif
 
-                </form>
+                        @if (config('features.product_management.upload_image'))
+                            <div
+                                class="mb-8 p-6 bg-gray-50 dark:bg-[#0f1016] rounded border border-gray-200 dark:border-gray-700">
+                                <label
+                                    class="block text-gray-700 dark:text-gray-300 font-bold mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">PRODUCT
+                                    IMAGE</label>
 
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                                    <div>
+                                        <label
+                                            class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase mb-2 block">Option
+                                            1: Upload
+                                            File</label>
+                                        <input type="file" name="image"
+                                            class="block w-full text-sm text-gray-500 dark:text-gray-400
+                                            file:mr-4 file:py-2 file:px-4
+                                            file:rounded-sm file:border-0
+                                            file:text-xs file:font-semibold
+                                            file:bg-indigo-600 file:text-white
+                                            hover:file:bg-indigo-700
+                                            cursor-pointer bg-white dark:bg-[#1a1b26] border border-gray-300 dark:border-gray-700 rounded p-1">
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase mb-2 block">Option
+                                            2: Image
+                                            URL</label>
+                                        <input type="url" name="image_url"
+                                            class="w-full bg-white dark:bg-[#1a1b26] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded p-2 text-sm focus:outline-none focus:border-indigo-500 placeholder-gray-400 dark:placeholder-gray-600"
+                                            placeholder="https://example.com/image.jpg">
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
+                        <div class="flex justify-end gap-4">
+                            <a href="{{ route('admin.products.index') }}"
+                                class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 font-bold rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition text-sm">CANCEL</a>
+
+                            <button type="submit"
+                                class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded font-bold shadow-lg dark:shadow-[0_0_15px_rgba(79,70,229,0.4)] hover:shadow-xl dark:hover:shadow-[0_0_25px_rgba(79,70,229,0.6)] transition text-sm flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                SAVE PRODUCT
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
             </div>
         </div>
-    </div>
+    @else
+        <div class="py-16 bg-gray-50 dark:bg-[#0b0c15] min-h-screen flex items-center justify-center">
+            <div class="text-center">
+                <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Access Denied</h1>
+                <p class="text-gray-500 dark:text-gray-400 mb-8">Creating products is currently disabled.</p>
+                <a href="{{ route('admin.products.index') }}"
+                    class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded transition">
+                    Back to Products
+                </a>
+            </div>
+        </div>
+    @endif
 </x-app-layout>

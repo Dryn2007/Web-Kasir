@@ -1,4 +1,5 @@
 <x-app-layout>
+    @if (config('features.product_management.enabled'))
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-black text-2xl text-gray-900 dark:text-white leading-tight brand-font tracking-wider">
@@ -19,6 +20,7 @@
                         Total Database: <span class="text-gray-900 dark:text-white">{{ $products->total() }} Items</span>
                     </h3>
                     
+                    @if (config('features.product_management.create'))
                     <a href="{{ route('admin.products.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-sm font-bold text-sm shadow-lg dark:shadow-[0_0_15px_rgba(79,70,229,0.4)] hover:shadow-xl dark:hover:shadow-[0_0_25px_rgba(79,70,229,0.6)] skew-x-[-10deg] transition flex items-center gap-2">
                         <span class="skew-x-[10deg] flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -27,6 +29,7 @@
                             ADD PRODUCT
                         </span>
                     </a>
+                    @endif
                 </div>
 
                 <div class="bg-gray-50 dark:bg-[#0f1016] p-2 rounded-lg border border-gray-200 dark:border-gray-700 mb-6">
@@ -156,12 +159,15 @@
 
                                         <td class="px-6 py-4 text-right">
                                             <div class="flex justify-end gap-2 items-center">
+                                                @if (config('features.product_management.update'))
                                                 <a href="{{ route('admin.products.edit', $product) }}" class="text-yellow-600 dark:text-yellow-500 hover:text-yellow-700 dark:hover:text-yellow-300 bg-yellow-100 dark:bg-yellow-900/20 hover:bg-yellow-200 dark:hover:bg-yellow-900/40 p-2 rounded transition border border-yellow-200 dark:border-yellow-900/30">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                     </svg>
                                                 </a>
+                                                @endif
 
+                                                @if (config('features.product_management.delete'))
                                                 <form action="{{ route('admin.products.destroy', $product) }}" method="POST" onsubmit="return confirm('Hapus produk ini?');">
                                                     @csrf
                                                     @method('DELETE')
@@ -171,6 +177,7 @@
                                                         </svg>
                                                     </button>
                                                 </form>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>
@@ -187,4 +194,15 @@
             </div>
         </div>
     </div>
+    @else
+    <div class="py-16 bg-gray-50 dark:bg-[#0b0c15] min-h-screen flex items-center justify-center">
+        <div class="text-center">
+            <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Access Denied</h1>
+            <p class="text-gray-500 dark:text-gray-400 mb-8">Product management is currently disabled.</p>
+            <a href="{{ route('admin.dashboard') }}" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded transition">
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+    @endif
 </x-app-layout>

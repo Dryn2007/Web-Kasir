@@ -1,4 +1,5 @@
 <x-app-layout>
+    @if (config('features.review_management.enabled'))
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-black text-2xl text-gray-900 dark:text-white leading-tight brand-font tracking-wider">
@@ -122,4 +123,15 @@
             document.getElementById('replyModal').classList.add('hidden');
         }
     </script>
+    @else
+    <div class="py-16 bg-gray-50 dark:bg-[#0b0c15] min-h-screen flex items-center justify-center">
+        <div class="text-center">
+            <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Access Denied</h1>
+            <p class="text-gray-500 dark:text-gray-400 mb-8">Review management is currently disabled.</p>
+            <a href="{{ route('admin.dashboard') }}" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded transition">
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+    @endif
 </x-app-layout>
