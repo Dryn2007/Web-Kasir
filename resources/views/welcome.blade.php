@@ -88,21 +88,13 @@
                 </div>
             @endif
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4 sm:px-0">
-
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-4 sm:px-0">
+            
                 @foreach($products as $product)
                     <a href="{{ route('product.show', $product->id) }}"
-                        class="group relative block bg-[#1a1b26] rounded-lg overflow-hidden border border-gray-800 hover:border-indigo-500/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_40px_-10px_rgba(79,70,229,0.2)]">
+                        class="group relative flex flex-col bg-[#1a1b26] rounded-2xl overflow-hidden border border-gray-800 hover:border-indigo-500/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_30px_-10px_rgba(79,70,229,0.3)]">
 
-                        <div class="relative h-48 w-full overflow-hidden bg-gray-900">
-                            @if($product->stock <= 0)
-                                <div
-                                    class="absolute inset-0 bg-black/80 z-20 flex items-center justify-center backdrop-blur-sm">
-                                    <span
-                                        class="text-red-500 font-bold border-2 border-red-500 px-4 py-1 rounded rotate-[-10deg] tracking-widest text-lg shadow-lg">SOLD
-                                        OUT</span>
-                                </div>
-                            @endif
+                        <div class="relative h-64 w-full overflow-hidden bg-gray-900">
 
                             @php
                                 $imageSrc = null;
@@ -114,55 +106,97 @@
                                     }
                                 }
                             @endphp
-
                             @if($imageSrc)
                                 <img src="{{ $imageSrc }}" alt="{{ $product->name }}"
-                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 {{ $product->stock <= 0 ? 'grayscale opacity-50' : '' }}"
-                                    onerror="this.onerror=null; this.src='https://placehold.co/600x400/1a1b26/FFF?text=No+Image';">
+                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 {{ $product->stock <= 0 ? 'grayscale opacity-40' : '' }}"
+                                    onerror="this.onerror=null; this.src='https://placehold.co/600x800/1a1b26/FFF?text=No+Image';">
                             @else
-                                <div class="w-full h-full flex items-center justify-center text-gray-600">
-                                    <span class="text-xs">No Image</span>
+                                <div class="w-full h-full flex flex-col items-center justify-center text-gray-600 bg-[#15161c]">
+                                    <svg class="w-10 h-10 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                        </path>
+                                    </svg>
+                                    <span class="text-xs font-bold">NO PREVIEW</span>
                                 </div>
                             @endif
 
-                            <div
-                                class="absolute inset-0 bg-gradient-to-t from-[#1a1b26] via-transparent to-transparent opacity-60">
+                            <div class="absolute top-3 left-3">
+                                <span
+                                    class="bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-1 rounded border border-white/10 shadow-sm">
+                                    KEY
+                                </span>
+                            </div>
+
+                            @if($product->stock <= 0)
+                                <div class="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-[2px] z-10">
+                                    <span
+                                        class="bg-red-600 text-white text-xs font-black px-4 py-2 rounded-sm -rotate-3 tracking-widest shadow-lg border-2 border-red-500/50">
+                                        SOLD OUT
+                                    </span>
+                                </div>
+                            @endif
+
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#1a1b26] via-transparent to-transparent opacity-90">
                             </div>
                         </div>
 
-                        <div class="p-4 relative">
-                            <div class="flex items-center gap-2 mb-2">
+                        <div class="p-5 flex flex-col flex-grow relative -mt-8 z-10">
+
+                            <div class="flex justify-between items-center mb-2">
+                                <div
+                                    class="flex items-center gap-1 bg-black/40 backdrop-blur-md px-2 py-1 rounded-full border border-white/5">
+                                    <svg class="w-3 h-3 text-yellow-400 fill-current" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                    </svg>
+                                    <span class="text-xs font-bold text-white">{{ $product->average_rating }}</span>
+                                </div>
                                 <span
-                                    class="bg-[#252630] text-indigo-400 text-[10px] font-bold px-2 py-0.5 rounded border border-gray-700">DIGITAL
-                                    KEY</span>
+                                    class="text-[10px] font-medium text-gray-400 bg-black/40 px-2 py-1 rounded-full border border-white/5">
+                                    {{ $product->total_sold }} Sold
+                                </span>
                             </div>
 
-                            <h3
-                                class="text-lg font-bold text-gray-100 mb-1 leading-tight group-hover:text-indigo-400 transition-colors truncate brand-font">
+                            <h3 class="text-lg font-bold text-white mb-1 leading-snug group-hover:text-indigo-400 transition-colors line-clamp-1"
+                                title="{{ $product->name }}">
                                 {{ $product->name }}
                             </h3>
 
-                            <div class="flex justify-between items-end mt-4">
+                            <div class="flex-grow"></div>
+
+                            <div class="flex justify-between items-end mt-4 pt-4 border-t border-gray-800">
                                 <div class="flex flex-col">
-                                    <span class="text-xs text-gray-500 mb-0.5">Price</span>
+                                    <span class="text-[10px] text-gray-500 uppercase tracking-wider font-bold">Price</span>
                                     <span
-                                        class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">
+                                        class="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-300">
                                         Rp {{ number_format($product->price, 0, ',', '.') }}
                                     </span>
                                 </div>
+
                                 <div
-                                    class="w-8 h-8 rounded bg-[#252630] text-gray-400 group-hover:bg-indigo-600 group-hover:text-white flex items-center justify-center transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                        stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                    </svg>
+                                    class="w-10 h-10 rounded-xl bg-[#252630] text-indigo-400 group-hover:bg-indigo-600 group-hover:text-white flex items-center justify-center transition-all duration-300 shadow-lg group-hover:shadow-indigo-500/30">
+                                    @if($product->stock > 0)
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                            class="h-5 w-5 transform group-hover:scale-110 transition-transform" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                        </svg>
+                                    @else
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                                        </svg>
+                                    @endif
                                 </div>
                             </div>
+
                         </div>
                     </a>
                 @endforeach
-
+            
             </div>
 
             <div class="mt-12 px-4 sm:px-0">

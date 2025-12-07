@@ -3,13 +3,13 @@
 
     <div class="py-12 bg-[#0b0c15] min-h-screen">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-[#1a1b26] overflow-hidden shadow-[0_0_20px_rgba(79,70,229,0.1)] sm:rounded-lg border border-gray-800">
+            
+            <div class="bg-[#1a1b26] overflow-hidden shadow-[0_0_20px_rgba(79,70,229,0.1)] sm:rounded-lg border border-gray-800 mb-8">
                 <div class="p-6 text-gray-100">
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         
                         <div class="h-96 bg-gray-900 rounded-lg overflow-hidden flex items-center justify-center border border-gray-700 relative group">
-                            
                             @php
                                 $imageSrc = null;
                                 if ($product->image) {
@@ -46,6 +46,17 @@
                             <div>
                                 <h1 class="text-4xl font-black text-white mb-2 brand-font tracking-wide leading-tight">{{ $product->name }}</h1>
                                 
+                                <div class="flex items-center gap-2 mb-4">
+                                    <div class="flex text-yellow-500">
+                                        @for($i=1; $i<=5; $i++)
+                                            <svg class="w-4 h-4 {{ $i <= round($product->average_rating) ? 'fill-current' : 'text-gray-600 fill-current' }}" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                        @endfor
+                                    </div>
+                                    <span class="text-gray-400 text-sm">({{ $product->reviews->count() }} Reviews)</span>
+                                    <span class="text-gray-600 text-sm">•</span>
+                                    <span class="text-gray-400 text-sm">{{ $product->total_sold }} Sold</span>
+                                </div>
+
                                 <div class="flex items-center gap-4 mb-6">
                                     <p class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400 brand-font">
                                         Rp {{ number_format($product->price) }}
@@ -73,7 +84,6 @@
                             <div class="mt-4">
                                 @if($product->stock > 0)
                                     <div class="flex gap-4">
-                                        
                                         <form action="{{ route('buy.now', $product->id) }}" method="POST" class="flex-1" onsubmit="return checkAuth(event)">
                                             @csrf
                                             <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-sm skew-x-[-10deg] transition shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.6)] group">
@@ -96,7 +106,6 @@
                                                 </span>
                                             </button>
                                         </form>
-
                                     </div>
                                 @else
                                     <button disabled class="w-full bg-gray-800 text-gray-500 font-bold py-4 px-6 rounded-sm skew-x-[-10deg] cursor-not-allowed border border-gray-700">
@@ -109,6 +118,55 @@
 
                 </div>
             </div>
+
+            <div class="bg-[#1a1b26] rounded-lg border border-gray-800 shadow-lg p-6">
+                <h3 class="text-2xl font-bold text-white brand-font mb-6 border-b border-gray-700 pb-4 flex items-center gap-3">
+                    PLAYER REVIEWS 
+                    <span class="text-sm font-normal bg-indigo-900/30 text-indigo-300 px-3 py-1 rounded-full border border-indigo-500/30">
+                        {{ $product->average_rating }} / 5.0 ({{ $product->reviews->count() }})
+                    </span>
+                </h3>
+
+                <div class="md:grid-cols-3 gap-8">
+                    <div class="md:col-span-2 space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                        @if($product->reviews->isEmpty())
+                            <div class="text-center py-12 border border-dashed border-gray-700 rounded bg-[#0f1016]/50">
+                                <p class="text-gray-500 text-sm">No reviews yet.</p>
+                                <p class="text-gray-600 text-xs mt-1">Be the first to review this game!</p>
+                            </div>
+                        @else
+                            @foreach($product->reviews->sortByDesc('created_at') as $review)
+                                <div class="bg-[#0f1016] p-4 rounded border border-gray-800 flex gap-4 hover:border-gray-700 transition">
+                                    <div class="flex-shrink-0">
+                                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-white font-bold border border-gray-600 shadow-md">
+                                            {{ substr($review->user->name, 0, 1) }}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex-grow">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <h5 class="text-white font-bold text-sm">{{ $review->user->name }}</h5>
+                                            <span class="text-gray-600 text-xs">{{ $review->created_at->diffForHumans() }}</span>
+                                        </div>
+                                        
+                                        <div class="flex items-center gap-0.5 mb-2">
+                                            @for($i=1; $i<=5; $i++)
+                                                <svg class="w-3 h-3 {{ $i <= $review->rating ? 'text-yellow-500' : 'text-gray-800' }} fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                            @endfor
+                                        </div>
+
+                                        <p class="text-gray-400 text-sm leading-relaxed">
+                                            {{ $review->comment ?? 'No comment provided.' }}
+                                        </p>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
+                    </div>
+
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -124,11 +182,11 @@
                     title: 'LOGIN DULU, BRO!',
                     text: "Kamu harus login untuk membeli produk ini.",
                     icon: 'warning',
-                    background: '#1a1b26', // Background Gelap
-                    color: '#fff', // Teks Putih
+                    background: '#1a1b26',
+                    color: '#fff',
                     showCancelButton: true,
-                    confirmButtonColor: '#4f46e5', // Tombol Biru Indigo
-                    cancelButtonColor: '#374151',  // Tombol Abu
+                    confirmButtonColor: '#4f46e5',
+                    cancelButtonColor: '#374151',
                     confirmButtonText: '🚀 GAS LOGIN',
                     cancelButtonText: 'Nanti Aja'
                 }).then((result) => {

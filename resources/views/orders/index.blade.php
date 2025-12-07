@@ -1,9 +1,4 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-black text-2xl text-white leading-tight brand-font tracking-wider">
-            MY <span class="text-indigo-500">LIBRARY</span> & HISTORY
-        </h2>
-    </x-slot>
 
     <div class="py-12 bg-[#0b0c15] min-h-screen">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">

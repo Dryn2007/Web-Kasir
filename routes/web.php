@@ -46,6 +46,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
 
     Route::post('/orders/{id}/cancel', [OrderController::class, 'cancelOrder'])->name('orders.cancel');
+
+    Route::post('/product/{id}/review', [App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
     
 });
 

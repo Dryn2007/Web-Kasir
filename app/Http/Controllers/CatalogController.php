@@ -25,10 +25,37 @@ class CatalogController extends Controller
 
     public function show($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::with(['reviews.user'])->findOrFail($id);
 
-        // Kita return ke view baru khusus detail
-        return view('product.show', compact('product'));
+        // LOGIKA PENGECEKAN REVIEW
+        $canReview = false;
+        $reviewMessage = 'Silakan login untuk mereview.';
+
+        if (\Illuminate\Support\Facades\Auth::check()) {
+            $user = \Illuminate\Support\Facades\Auth::user();
+
+            // Cek sudah beli belum?
+            $hasPurchased = \App\Models\OrderItem::where('product_id', $product->id)
+                ->whereHas('order', function ($query) use ($user) {
+                    $query->where('user_id', $user->id)->where('status', 'paid');
+                })->exists();
+
+            // Cek sudah review belum?
+            $hasReviewed = \App\Models\Review::where('user_id', $user->id)
+                ->where('product_id', $product->id)
+                ->exists();
+
+            if (!$hasPurchased) {
+                $reviewMessage = 'Anda belum membeli produk ini.';
+            } elseif ($hasReviewed) {
+                $reviewMessage = 'Anda sudah memberikan ulasan.';
+            } else {
+                $canReview = true; // Lolos semua cek, boleh review
+            }
+        }
+
+        // Kirim variable $canReview dan $reviewMessage ke View
+        return view('product.show', compact('product', 'canReview', 'reviewMessage'));
     }
 
     // Method baru untuk AJAX Search

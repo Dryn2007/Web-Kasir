@@ -1,9 +1,5 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-black text-2xl text-white leading-tight brand-font tracking-wider">
-            PLAYER <span class="text-indigo-500">PROFILE</span>
-        </h2>
-    </x-slot>
+ 
 
     <div class="py-12 bg-[#0b0c15] min-h-screen">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
