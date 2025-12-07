@@ -1,10 +1,4 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-black text-2xl text-white leading-tight brand-font tracking-wider">
-            ADMIN <span class="text-indigo-500">CONSOLE</span>
-        </h2>
-    </x-slot>
-
     <div class="py-12 bg-[#0b0c15] min-h-screen">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
@@ -88,6 +82,45 @@
                             <h4 class="text-white font-bold text-lg group-hover:text-pink-400 transition brand-font">
                                 REVIEWS</h4>
                             <p class="text-gray-500 text-xs mt-1">Feedback & Replies</p>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="{{ route('admin.chat.index') }}"
+                    class="group relative bg-[#1a1b26] p-6 rounded-xl border border-gray-800 hover:border-violet-500 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-br from-violet-600/10 to-transparent opacity-0 group-hover:opacity-100 transition rounded-xl">
+                    </div>
+                
+                    <div class="relative flex items-center gap-4">
+                
+                        <div
+                            class="relative p-3 bg-[#0f1016] rounded-lg border border-gray-700 group-hover:border-violet-500/50 group-hover:text-violet-400 text-gray-400 transition">
+                
+                            @if(isset($unreadChats) && $unreadChats > 0)
+                                <span class="absolute -top-2 -right-2 flex h-5 w-5">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                    <span
+                                        class="relative inline-flex rounded-full h-5 w-5 bg-red-500 text-white text-[10px] font-bold items-center justify-center border-2 border-[#1a1b26]">
+                                        {{ $unreadChats }}
+                                    </span>
+                                </span>
+                            @endif
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                            </svg>
+                        </div>
+                
+                        <div>
+                            <h4 class="text-white font-bold text-lg group-hover:text-violet-400 transition brand-font">LIVE CHAT</h4>
+                
+                            @if(isset($unreadChats) && $unreadChats > 0)
+                                <p class="text-red-400 text-xs mt-1 font-bold animate-pulse">{{ $unreadChats }} New Messages!</p>
+                            @else
+                                <p class="text-gray-500 text-xs mt-1">Support Tickets</p>
+                            @endif
                         </div>
                     </div>
                 </a>
