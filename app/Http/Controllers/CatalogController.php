@@ -23,39 +23,69 @@ class CatalogController extends Controller
         return view('welcome', compact('products'));
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $product = Product::with(['reviews.user'])->findOrFail($id);
+        $product = Product::findOrFail($id);
 
-        // LOGIKA PENGECEKAN REVIEW
+        // 1. DATA STATISTIK UTAMA (TIDAK BOLEH TERPENGARUH FILTER)
+        // Kita hitung langsung dari database murni
+        $allReviewsCount = $product->reviews()->count();
+        $avgRating = round($product->reviews()->avg('rating'), 1) ?? 0;
+
+        // 2. QUERY UNTUK LIST ULASAN (AKAN DIFILTER)
+        $reviewsQuery = $product->reviews()->with('user');
+
+        // Filter Bintang
+        if ($request->has('rating') && $request->rating != 'all') {
+            $reviewsQuery->where('rating', $request->rating);
+        }
+
+        // Sorting
+        if ($request->has('sort')) {
+            switch ($request->sort) {
+                case 'rating_high':
+                    $reviewsQuery->orderBy('rating', 'desc');
+                    break;
+                case 'rating_low':
+                    $reviewsQuery->orderBy('rating', 'asc');
+                    break;
+                case 'oldest':
+                    $reviewsQuery->orderBy('created_at', 'asc');
+                    break;
+                default: // latest
+                    $reviewsQuery->orderBy('created_at', 'desc');
+                    break;
+            }
+        } else {
+            $reviewsQuery->latest();
+        }
+
+        $reviews = $reviewsQuery->get(); // Hasil yang sudah difilter
+
+        // 3. LOGIKA CEK PEMBELIAN (Untuk Form)
         $canReview = false;
         $reviewMessage = 'Silakan login untuk mereview.';
 
         if (\Illuminate\Support\Facades\Auth::check()) {
             $user = \Illuminate\Support\Facades\Auth::user();
-
-            // Cek sudah beli belum?
             $hasPurchased = \App\Models\OrderItem::where('product_id', $product->id)
                 ->whereHas('order', function ($query) use ($user) {
                     $query->where('user_id', $user->id)->where('status', 'paid');
                 })->exists();
-
-            // Cek sudah review belum?
             $hasReviewed = \App\Models\Review::where('user_id', $user->id)
-                ->where('product_id', $product->id)
-                ->exists();
+                ->where('product_id', $product->id)->exists();
 
             if (!$hasPurchased) {
                 $reviewMessage = 'Anda belum membeli produk ini.';
             } elseif ($hasReviewed) {
                 $reviewMessage = 'Anda sudah memberikan ulasan.';
             } else {
-                $canReview = true; // Lolos semua cek, boleh review
+                $canReview = true;
             }
         }
 
-        // Kirim variable $canReview dan $reviewMessage ke View
-        return view('product.show', compact('product', 'canReview', 'reviewMessage'));
+        // Kirim semua variabel ke view
+        return view('product.show', compact('product', 'reviews', 'allReviewsCount', 'avgRating', 'canReview', 'reviewMessage'));
     }
 
     // Method baru untuk AJAX Search
