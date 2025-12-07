@@ -30,93 +30,133 @@
     <div id="browse-games" class="py-16 bg-[#0b0c15]">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-            <div class="flex flex-col md:flex-row justify-between items-center mb-10 px-4 sm:px-0 gap-6">
-
+            <div class="mb-8 px-4 sm:px-0">
                 <h2 class="text-2xl md:text-3xl font-bold text-white flex items-center gap-3 brand-font">
                     <span class="w-1 h-8 bg-indigo-500 rounded-full shadow-[0_0_10px_#6366f1]"></span>
                     TRENDING NOW
                 </h2>
+            </div>
 
-                <div class="w-full md:w-96 relative group z-30">
+            <div class="sticky top-20 z-40 px-4 sm:px-0 mb-10">
+                <form action="{{ route('home') }}" method="GET">
+                    <input type="hidden" name="ref" value="filter">
+            
                     <div
-                        class="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 blur">
-                    </div>
-
-                    <form action="{{ route('home') }}" method="GET" class="relative">
-                        <input type="hidden" name="ref" value="search">
-
-                        <div class="flex items-center bg-[#1a1b26] rounded leading-none relative z-10">
-                            <span class="absolute left-4 text-gray-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
+                        class="bg-[#1a1b26]/95 backdrop-blur-md border border-gray-700/50 rounded-xl p-1.5 flex flex-col md:flex-row gap-2 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]">
+            
+                        <div class="relative w-full md:w-64 flex-shrink-0 group">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+                                @if(request('sort') == 'popular')
+                                    <svg class="w-4 h-4 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" />
+                                    </svg>
+                                @elseif(request('sort') == 'price_asc')
+                                    <svg class="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                                    </svg>
+                                @elseif(request('sort') == 'price_desc')
+                                    <svg class="w-4 h-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
+                                    </svg>
+                                @else
+                                    <svg class="w-4 h-4 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                @endif
+                            </div>
+            
+                            <select name="sort" onchange="this.form.submit()"
+                                class="w-full bg-[#0f1016] text-gray-300 border border-gray-700/50 text-sm rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block pl-10 pr-8 p-3 cursor-pointer hover:bg-gray-900 transition appearance-none font-bold">
+                                <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Newest Arrival</option>
+                                <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }} class="text-yellow-400">
+                                    🔥 Best Selling</option>
+                                <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Price: Low to High
+                                </option>
+                                <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Price: High to Low
+                                </option>
+                                <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Oldest</option>
+                            </select>
+            
+                            <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </div>
+            
+                        <div class="relative w-full group">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="h-5 w-5 text-gray-500 group-focus-within:text-indigo-400 transition" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
-                            </span>
-
+                            </div>
                             <input type="text" name="search" id="search-input" value="{{ request('search') }}"
-                                class="w-full bg-transparent text-gray-200 py-3 pl-12 pr-4 focus:outline-none placeholder-gray-500 font-bold border-none focus:ring-0"
-                                placeholder="Search games (e.g. Elden Ring)..." autocomplete="off"
-                                onkeyup="fetchSuggestions(this.value)" onfocus="fetchSuggestions(this.value)">
+                                class="w-full bg-[#0f1016]/50 hover:bg-[#0f1016] focus:bg-[#0f1016] text-white border-transparent focus:border-indigo-500 text-sm rounded-lg focus:ring-0 block pl-10 p-3 placeholder-gray-500 font-medium transition"
+                                placeholder="Search games..." autocomplete="off" onkeyup="fetchSuggestions(this.value)"
+                                onfocus="fetchSuggestions(this.value)">
+            
+                            <div id="search-suggestions"
+                                class="absolute top-full left-0 right-0 mt-2 bg-[#1a1b26] border border-gray-700 rounded-lg shadow-2xl hidden overflow-hidden z-50">
+                                <ul id="suggestion-list" class="divide-y divide-gray-800 text-sm text-gray-300"></ul>
+                            </div>
                         </div>
-                    </form>
-
-                    <div id="search-suggestions"
-                        class="absolute w-full bg-[#1a1b26] border border-gray-700 rounded-b-lg shadow-2xl mt-1 hidden overflow-hidden z-50">
-                        <ul id="suggestion-list" class="divide-y divide-gray-800 text-sm text-gray-300"></ul>
+            
+                        @if(request('search') || request('sort'))
+                            <a href="{{ route('home') }}"
+                                class="flex-shrink-0 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg w-10 flex items-center justify-center transition"
+                                title="Reset Filters">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </a>
+                        @endif
                     </div>
-                </div>
-
+                </form>
             </div>
 
             @if(request('search'))
-                <div
-                    class="mb-6 px-4 sm:px-0 flex items-center justify-between bg-indigo-900/20 p-4 rounded border border-indigo-500/30">
-                    <p class="text-gray-300">
-                        Showing results for: <span class="text-white font-bold text-lg">"{{ request('search') }}"</span>
-                        <span class="text-gray-500 text-sm ml-2">({{ $products->total() }} items found)</span>
+                <div class="mb-6 px-4 sm:px-0">
+                    <p class="text-gray-400">
+                        Found <span class="text-white font-bold">{{ $products->total() }}</span> results for "<span
+                            class="text-indigo-400">{{ request('search') }}</span>"
                     </p>
-                    <a href="{{ route('home') }}"
-                        class="text-xs bg-red-500/20 text-red-400 px-3 py-1.5 rounded hover:bg-red-500/40 border border-red-500/30 transition flex items-center gap-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                        Clear Search
-                    </a>
                 </div>
             @endif
 
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-4 sm:px-0">
-            
+
                 @foreach($products as $product)
                     <a href="{{ route('product.show', $product->id) }}"
                         class="group relative flex flex-col bg-[#1a1b26] rounded-2xl overflow-hidden border border-gray-800 hover:border-indigo-500/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_30px_-10px_rgba(79,70,229,0.3)]">
 
                         <div class="relative h-64 w-full overflow-hidden bg-gray-900">
-
                             @php
-                                $imageSrc = null;
-                                if ($product->image) {
-                                    if (str_starts_with($product->image, 'http')) {
-                                        $imageSrc = $product->image;
-                                    } else {
-                                        $imageSrc = asset('storage/' . $product->image);
-                                    }
-                                }
+    $imageSrc = null;
+    if ($product->image) {
+        if (str_starts_with($product->image, 'http')) {
+            $imageSrc = $product->image;
+        } else {
+            $imageSrc = asset('storage/' . $product->image);
+        }
+    }
                             @endphp
+
                             @if($imageSrc)
                                 <img src="{{ $imageSrc }}" alt="{{ $product->name }}"
                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 {{ $product->stock <= 0 ? 'grayscale opacity-40' : '' }}"
                                     onerror="this.onerror=null; this.src='https://placehold.co/600x800/1a1b26/FFF?text=No+Image';">
                             @else
                                 <div class="w-full h-full flex flex-col items-center justify-center text-gray-600 bg-[#15161c]">
-                                    <svg class="w-10 h-10 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                        </path>
-                                    </svg>
                                     <span class="text-xs font-bold">NO PREVIEW</span>
                                 </div>
                             @endif
@@ -129,7 +169,8 @@
                             </div>
 
                             @if($product->stock <= 0)
-                                <div class="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-[2px] z-10">
+                                <div
+                                    class="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-[2px] z-10">
                                     <span
                                         class="bg-red-600 text-white text-xs font-black px-4 py-2 rounded-sm -rotate-3 tracking-widest shadow-lg border-2 border-red-500/50">
                                         SOLD OUT
@@ -137,7 +178,8 @@
                                 </div>
                             @endif
 
-                            <div class="absolute inset-0 bg-gradient-to-t from-[#1a1b26] via-transparent to-transparent opacity-90">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-[#1a1b26] via-transparent to-transparent opacity-90">
                             </div>
                         </div>
 
@@ -196,7 +238,7 @@
                         </div>
                     </a>
                 @endforeach
-            
+
             </div>
 
             <div class="mt-12 px-4 sm:px-0">
@@ -207,12 +249,14 @@
                 <div class="text-center mt-20 py-16 bg-[#1a1b26] rounded-xl border border-dashed border-gray-700">
                     <svg class="mx-auto h-12 w-12 text-gray-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <h3 class="text-lg font-medium text-gray-300">No Games Found for "{{ request('search') }}"</h3>
+                    <h3 class="text-lg font-medium text-gray-300">No Games Found</h3>
                     <p class="mt-1 text-gray-500">Coba kata kunci lain atau reset pencarian.</p>
-                    <a href="{{ route('home') }}"
-                        class="mt-4 inline-block text-indigo-400 hover:text-indigo-300 underline">View All Games</a>
+                    @if(request('search'))
+                        <a href="{{ route('home') }}"
+                            class="mt-4 inline-block text-indigo-400 hover:text-indigo-300 underline">Reset Search</a>
+                    @endif
                 </div>
             @endif
 

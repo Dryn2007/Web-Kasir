@@ -67,6 +67,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     //  MANAJEMEN USER )
     Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');
     Route::delete('/admin/users/{id}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
+
+    Route::get('/admin/reviews', [App\Http\Controllers\Admin\ReviewController::class, 'index'])->name('admin.reviews.index');
+    Route::post('/admin/reviews/{id}/reply', [App\Http\Controllers\Admin\ReviewController::class, 'reply'])->name('admin.reviews.reply');
+    Route::delete('/admin/reviews/{id}', [App\Http\Controllers\Admin\ReviewController::class, 'destroy'])->name('admin.reviews.destroy');
 });
 
 require __DIR__ . '/auth.php';

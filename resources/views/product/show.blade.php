@@ -13,14 +13,14 @@
                         <div
                             class="h-96 bg-gray-900 rounded-lg overflow-hidden flex items-center justify-center border border-gray-700 relative group">
                             @php
-                                $imageSrc = null;
-                                if ($product->image) {
-                                    if (str_starts_with($product->image, 'http')) {
-                                        $imageSrc = $product->image;
-                                    } else {
-                                        $imageSrc = asset('storage/' . $product->image);
-                                    }
-                                }
+$imageSrc = null;
+if ($product->image) {
+    if (str_starts_with($product->image, 'http')) {
+        $imageSrc = $product->image;
+    } else {
+        $imageSrc = asset('storage/' . $product->image);
+    }
+}
                             @endphp
 
                             @if($imageSrc)
@@ -273,8 +273,7 @@
                             </div>
                         @else
                             @foreach($reviews as $review)
-                                <div
-                                    class="bg-[#0f1016] p-4 rounded border border-gray-800 flex gap-4 hover:border-gray-700 transition">
+                                <div class="bg-[#0f1016] p-4 rounded border border-gray-800 flex gap-4 hover:border-gray-700 transition">
                                     <div class="flex-shrink-0">
                                         <div
                                             class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-white font-bold border border-gray-600 shadow-md">
@@ -293,8 +292,7 @@
                                             @for($i = 1; $i <= 5; $i++)
                                                 <svg class="w-3 h-3 {{ $i <= $review->rating ? 'text-yellow-500' : 'text-gray-800' }} fill-current"
                                                     viewBox="0 0 24 24">
-                                                    <path
-                                                        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
                                                 </svg>
                                             @endfor
                                         </div>
@@ -302,6 +300,19 @@
                                         <p class="text-gray-400 text-sm leading-relaxed">
                                             {{ $review->comment ?? 'No comment provided.' }}
                                         </p>
+
+                                        @if($review->admin_reply)
+                                            <div class="mt-3 ml-2 pl-3 border-l-2 border-indigo-500 bg-[#15161c] p-2 rounded-r">
+                                                <div class="flex items-center gap-2 mb-1">
+                                                    <span class="bg-indigo-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">ADMIN</span>
+                                                    <span
+                                                        class="text-gray-500 text-[10px]">{{ \Carbon\Carbon::parse($review->reply_at)->diffForHumans() }}</span>
+                                                </div>
+                                                <p class="text-gray-300 text-xs">
+                                                    {{ $review->admin_reply }}
+                                                </p>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                             @endforeach

@@ -10,16 +10,52 @@ class CatalogController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::latest();
+        // 1. MULAI QUERY DENGAN LOGIKA BEST SELLER YANG BENAR
+        // Hitung jumlah quantity, TAPI hanya dari order yang statusnya 'paid'
+        $query = Product::withSum(['orderItems' => function ($query) {
+            $query->whereHas('order', function ($q) {
+                $q->where('status', 'paid');
+            });
+        }], 'quantity');
 
+        // 2. LOGIKA PENCARIAN
         if ($request->has('search') && $request->search != '') {
-            $search = $request->search;
-            // Cari berdasarkan nama produk (case insensitive)
-            $query->where('name', 'like', '%' . $search . '%');
+            $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        // Ambil semua produk, urutkan dari yang terbaru
-        $products = $query->paginate(8)->appends(['search' => $request->search]);
+        // 3. LOGIKA SORTIR
+        if ($request->has('sort')) {
+            switch ($request->sort) {
+                case 'popular':
+                    // Urutkan dari jumlah terbanyak (desc), nilai null dianggap 0
+                    $query->orderByRaw('COALESCE(order_items_sum_quantity, 0) DESC');
+                    break;
+                case 'price_asc':
+                    $query->orderBy('price', 'asc');
+                    break;
+                case 'price_desc':
+                    $query->orderBy('price', 'desc');
+                    break;
+                case 'oldest':
+                    $query->orderBy('created_at', 'asc');
+                    break;
+                default: // latest
+                    $query->orderBy('created_at', 'desc');
+                    break;
+            }
+        } else {
+            // Default: Terbaru dulu
+            $query->orderBy('created_at', 'desc');
+        }
+
+        // Secondary Sort: Jika jumlah terjual sama/harga sama, urutkan berdasarkan terbaru
+        // Ini penting agar urutan tidak acak-acakan jika angkanya sama
+        if ($request->sort !== 'latest') {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        $products = $query->paginate(12)->appends($request->all());
+
         return view('welcome', compact('products'));
     }
 

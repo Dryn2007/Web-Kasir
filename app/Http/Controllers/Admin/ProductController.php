@@ -10,9 +10,57 @@ use Illuminate\Support\Facades\Storage;
 class ProductController extends Controller
 {
     // Menampilkan daftar produk
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::all();
+        // 1. MULAI QUERY DENGAN RELASI STATISTIK
+        $query = Product::query()
+            ->withAvg('reviews', 'rating') // Hitung rata-rata bintang -> reviews_avg_rating
+            ->withCount('reviews')         // Hitung jumlah ulasan -> reviews_count
+            ->withSum(['orderItems' => function ($q) { // Hitung total terjual (Lunas)
+                $q->whereHas('order', fn($o) => $o->where('status', 'paid'));
+            }], 'quantity'); // -> order_items_sum_quantity
+
+        // 2. LOGIKA SEARCH
+        if ($request->has('search') && $request->search != '') {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        // 3. LOGIKA SORTIR
+        if ($request->has('sort')) {
+            switch ($request->sort) {
+                case 'popular': // Terlaris
+                    $query->orderByRaw('COALESCE(order_items_sum_quantity, 0) DESC');
+                    break;
+                case 'rating_high': // Bintang Tertinggi
+                    $query->orderByRaw('COALESCE(reviews_avg_rating, 0) DESC');
+                    break;
+                case 'rating_low': // Bintang Terendah
+                    $query->orderByRaw('COALESCE(reviews_avg_rating, 0) ASC');
+                    break;
+                case 'price_asc':
+                    $query->orderBy('price', 'asc');
+                    break;
+                case 'price_desc':
+                    $query->orderBy('price', 'desc');
+                    break;
+                case 'oldest':
+                    $query->orderBy('created_at', 'asc');
+                    break;
+                default: // latest
+                    $query->orderBy('created_at', 'desc');
+                    break;
+            }
+        } else {
+            $query->latest();
+        }
+
+        // 4. Secondary Sort (Agar urutan stabil)
+        if ($request->sort !== 'latest') {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        $products = $query->paginate(10)->appends($request->all());
+
         return view('admin.products.index', compact('products'));
     }
 
