@@ -24,8 +24,9 @@
             <h3 class="font-bold text-lg mb-4 text-gray-300 brand-font border-l-4 border-indigo-500 pl-3">MANAGEMENT
                 MODULES</h3>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"> <a
-                    href="{{ route('admin.products.index') }}"
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                <a href="{{ route('admin.products.index') }}"
                     class="group relative bg-[#1a1b26] p-6 rounded-xl border border-gray-800 hover:border-indigo-500 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(79,70,229,0.3)]">
                     <div
                         class="absolute inset-0 bg-gradient-to-br from-indigo-600/10 to-transparent opacity-0 group-hover:opacity-100 transition rounded-xl">
@@ -109,6 +110,28 @@
                             <h4 class="text-white font-bold text-lg group-hover:text-green-400 transition brand-font">
                                 USERS</h4>
                             <p class="text-gray-500 text-xs mt-1">Manage Customers</p>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="{{ route('admin.about.edit') }}"
+                    class="group relative bg-[#1a1b26] p-6 rounded-xl border border-gray-800 hover:border-cyan-500 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(34,211,238,0.3)]">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-br from-cyan-600/10 to-transparent opacity-0 group-hover:opacity-100 transition rounded-xl">
+                    </div>
+                    <div class="relative flex items-center gap-4">
+                        <div
+                            class="p-3 bg-[#0f1016] rounded-lg border border-gray-700 group-hover:border-cyan-500/50 group-hover:text-cyan-400 text-gray-400 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="text-white font-bold text-lg group-hover:text-cyan-400 transition brand-font">
+                                ABOUT PAGE</h4>
+                            <p class="text-gray-500 text-xs mt-1">Edit Content & Image</p>
                         </div>
                     </div>
                 </a>

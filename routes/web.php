@@ -13,13 +13,14 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 
 
 
+
 Route::get('/', [CatalogController::class, 'index'])->name('home');
 Route::get('/product/{id}', [CatalogController::class, 'show'])->name('product.show');
 
 // Route Dashboard User/Tamu
 Route::get('/dashboard', [CatalogController::class, 'index'])->name('dashboard');
 Route::get('/search-suggestions', [CatalogController::class, 'getSuggestions'])->name('search.suggestions');
-
+Route::get('/about', [App\Http\Controllers\AboutController::class, 'index'])->name('about');
 // Group Middleware Auth (Untuk fitur yang wajib login saja)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -71,6 +72,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/reviews', [App\Http\Controllers\Admin\ReviewController::class, 'index'])->name('admin.reviews.index');
     Route::post('/admin/reviews/{id}/reply', [App\Http\Controllers\Admin\ReviewController::class, 'reply'])->name('admin.reviews.reply');
     Route::delete('/admin/reviews/{id}', [App\Http\Controllers\Admin\ReviewController::class, 'destroy'])->name('admin.reviews.destroy');
+
+    Route::get('/admin/about', [App\Http\Controllers\Admin\AboutController::class, 'edit'])->name('admin.about.edit');
+    Route::put('/admin/about', [App\Http\Controllers\Admin\AboutController::class, 'update'])->name('admin.about.update');
 });
 
 require __DIR__ . '/auth.php';

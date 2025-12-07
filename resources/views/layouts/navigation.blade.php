@@ -37,6 +37,12 @@
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex items-center">
+
+                    <a href="{{ route('about') }}"
+                        class="text-gray-300 hover:text-white px-3 py-2 rounded-md font-bold text-sm transition {{ request()->routeIs('about') ? 'text-indigo-400' : '' }}">
+                        About Us
+                    </a>
+
                     @auth
                         @if(Auth::user()->role !== 'admin')
                             <a href="{{ route('orders.index') }}"
@@ -66,13 +72,11 @@
                             <div
                                 class="absolute inset-0 bg-indigo-500 rounded-full opacity-0 group-hover:opacity-20 transition blur-md">
                             </div>
-
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 relative" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
-
                             @if(Auth::user()->carts->count() > 0)
                                 <span
                                     class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded border-2 border-[#0f1016]">
@@ -104,7 +108,6 @@
                                     class="hover:bg-indigo-600 hover:text-white transition">
                                     {{ __('Profile') }}
                                 </x-dropdown-link>
-
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <x-dropdown-link :href="route('logout')"
@@ -120,7 +123,6 @@
                     <div class="flex items-center gap-4">
                         <a href="{{ route('login') }}"
                             class="text-gray-300 hover:text-white font-bold transition text-sm">LOGIN</a>
-
                         @if (Route::has('register'))
                             <a href="{{ route('register') }}"
                                 class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-sm font-bold skew-x-[-10deg] transition shadow-[0_0_15px_rgba(79,70,229,0.4)] hover:shadow-[0_0_25px_rgba(79,70,229,0.6)] text-sm">
@@ -148,6 +150,12 @@
 
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-[#1a1b26] border-t border-gray-800">
         <div class="pt-2 pb-3 space-y-1">
+
+            <x-responsive-nav-link :href="route('about')" :active="request()->routeIs('about')"
+                class="text-gray-300 hover:text-white hover:bg-indigo-900/50">
+                {{ __('About Us') }}
+            </x-responsive-nav-link>
+
             @auth
                 @if(Auth::user()->role === 'admin')
                     <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')"
@@ -159,19 +167,17 @@
                         class="text-gray-300 hover:text-white hover:bg-indigo-900/50">
                         {{ __('Dashboard') }}
                     </x-responsive-nav-link>
-
                     <x-responsive-nav-link :href="route('orders.index')" :active="request()->routeIs('orders.index')"
                         class="text-gray-300 hover:text-white hover:bg-indigo-900/50">
                         {{ __('Riwayat Pesanan') }}
                     </x-responsive-nav-link>
-
                     <x-responsive-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.index')"
                         class="text-gray-300 hover:text-white hover:bg-indigo-900/50 flex justify-between items-center">
                         <span>{{ __('Keranjang Belanja') }}</span>
                         @if(Auth::user()->carts->count() > 0)
-                            <span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
-                                {{ Auth::user()->carts->count() }} Item
-                            </span>
+                            <span
+                                class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">{{ Auth::user()->carts->count() }}
+                                Item</span>
                         @endif
                     </x-responsive-nav-link>
                 @endif
@@ -184,31 +190,23 @@
                     <div class="font-medium text-base text-gray-200">{{ Auth::user()->name }}</div>
                     <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
                 </div>
-
                 <div class="mt-3 space-y-1">
-                    <x-responsive-nav-link :href="route('profile.edit')" class="text-gray-400 hover:text-white">
-                        {{ __('Profile') }}
-                    </x-responsive-nav-link>
-
+                    <x-responsive-nav-link :href="route('profile.edit')"
+                        class="text-gray-400 hover:text-white">{{ __('Profile') }}</x-responsive-nav-link>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <x-responsive-nav-link :href="route('logout')"
                             onclick="event.preventDefault(); this.closest('form').submit();"
-                            class="text-red-400 hover:text-red-300">
-                            {{ __('Log Out') }}
-                        </x-responsive-nav-link>
+                            class="text-red-400 hover:text-red-300">{{ __('Log Out') }}</x-responsive-nav-link>
                     </form>
                 </div>
             @else
                 <div class="mt-3 space-y-1 p-4">
-                    <x-responsive-nav-link :href="route('login')" class="text-gray-300 hover:text-white">
-                        {{ __('Log in') }}
-                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('login')"
+                        class="text-gray-300 hover:text-white">{{ __('Log in') }}</x-responsive-nav-link>
                     @if (Route::has('register'))
                         <x-responsive-nav-link :href="route('register')"
-                            class="text-indigo-400 hover:text-indigo-300 font-bold">
-                            {{ __('Register') }}
-                        </x-responsive-nav-link>
+                            class="text-indigo-400 hover:text-indigo-300 font-bold">{{ __('Register') }}</x-responsive-nav-link>
                     @endif
                 </div>
             @endauth
