@@ -51,9 +51,10 @@
                     list.innerHTML = '';
                     if (products.length > 0) {
                         container.classList.remove('hidden');
+                        const isDark = document.documentElement.classList.contains('dark');
                         products.forEach(product => {
                             const li = document.createElement('li');
-                            li.innerHTML = `<a href="${product.url}" class="block px-4 py-3 hover:bg-indigo-900/30 hover:text-white transition flex items-center gap-3"><img src="${product.image}" class="w-10 h-10 object-cover rounded bg-gray-800"><div><div class="font-bold text-gray-100">${product.name}</div><div class="text-xs text-indigo-400 font-mono">Rp ${product.price}</div></div></a>`;
+                            li.innerHTML = `<a href="${product.url}" class="block px-4 py-3 hover:bg-gray-100 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-white transition flex items-center gap-3"><img src="${product.image}" class="w-10 h-10 object-cover rounded bg-gray-200 dark:bg-gray-800"><div><div class="font-bold" style="color: ${isDark ? '#ffffff' : '#000000'};">${product.name}</div><div class="text-xs text-gray-500 dark:text-indigo-400 font-mono">Rp ${product.price}</div></div></a>`;
                             list.appendChild(li);
                         });
                     } else {
@@ -196,15 +197,18 @@
                             <div
                                 class="bg-white p-1 rounded w-12 h-8 flex items-center justify-center opacity-80 hover:opacity-100 transition">
                                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/1200px-Logo_QRIS.svg.png"
-                                    class="h-4"></div>
+                                    class="h-4">
+                            </div>
                             <div
                                 class="bg-white p-1 rounded w-12 h-8 flex items-center justify-center opacity-80 hover:opacity-100 transition">
                                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gopay_logo.svg/2560px-Gopay_logo.svg.png"
-                                    class="h-3"></div>
+                                    class="h-3">
+                            </div>
                             <div
                                 class="bg-white p-1 rounded w-12 h-8 flex items-center justify-center opacity-80 hover:opacity-100 transition">
                                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/2560px-Logo_dana_blue.svg.png"
-                                    class="h-3"></div>
+                                    class="h-3">
+                            </div>
                         </div>
                     </div>
 
@@ -225,31 +229,31 @@
     @auth
         @if(Auth::user()->role !== 'admin')
             <div x-data="{ 
-                                chatOpen: false, 
-                                message: '', 
-                                messages: [],
-                                unreadCount: 0, 
-                                init() {
-                                    setInterval(() => {
-                                        fetch('{{ route('chat.get') }}')
-                                        .then(res => res.json())
-                                        .then(data => { 
-                                            this.messages = data; 
-                                            if (!this.chatOpen) {
-                                                this.unreadCount = this.messages.filter(m => m.is_admin == 1 && m.is_read == 0).length;
+                                        chatOpen: false, 
+                                        message: '', 
+                                        messages: [],
+                                        unreadCount: 0, 
+                                        init() {
+                                            setInterval(() => {
+                                                fetch('{{ route('chat.get') }}')
+                                                .then(res => res.json())
+                                                .then(data => { 
+                                                    this.messages = data; 
+                                                    if (!this.chatOpen) {
+                                                        this.unreadCount = this.messages.filter(m => m.is_admin == 1 && m.is_read == 0).length;
+                                                    }
+                                                });
+                                            }, 3000);
+                                        },
+                                        toggleChat() {
+                                            this.chatOpen = !this.chatOpen;
+                                            if (this.chatOpen) {
+                                                this.unreadCount = 0;
+                                                fetch('{{ route('chat.read') }}', { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } });
+                                                setTimeout(() => { const box = document.getElementById('userChatBox'); box.scrollTop = box.scrollHeight; }, 100);
                                             }
-                                        });
-                                    }, 3000);
-                                },
-                                toggleChat() {
-                                    this.chatOpen = !this.chatOpen;
-                                    if (this.chatOpen) {
-                                        this.unreadCount = 0;
-                                        fetch('{{ route('chat.read') }}', { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } });
-                                        setTimeout(() => { const box = document.getElementById('userChatBox'); box.scrollTop = box.scrollHeight; }, 100);
-                                    }
-                                }
-                             }" class="fixed bottom-6 right-6 z-50">
+                                        }
+                                     }" class="fixed bottom-6 right-6 z-50">
 
                 <div x-show="chatOpen" x-transition:enter="transition ease-out duration-300"
                     x-transition:enter-start="opacity-0 translate-y-10 scale-95"

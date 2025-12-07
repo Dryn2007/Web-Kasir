@@ -1,29 +1,29 @@
 <x-app-layout>
-    <div class="py-12 bg-[#0b0c15] min-h-screen">
+    <div class="py-12 bg-gray-50 dark:bg-[#0b0c15] min-h-screen transition-colors duration-300">
         <div class="max-w-xl mx-auto sm:px-6 lg:px-8">
 
             @if(session('success'))
                 <div
-                    class="mb-4 bg-green-900/30 border border-green-500/50 text-green-300 px-4 py-3 rounded-lg text-sm font-bold text-center">
+                    class="mb-4 bg-green-100 dark:bg-green-900/30 border border-green-500/50 text-green-700 dark:text-green-300 px-4 py-3 rounded-lg text-sm font-bold text-center shadow-sm">
                     {{ session('success') }}
                 </div>
             @endif
 
             <div
-                class="bg-[#1a1b26] overflow-hidden shadow-[0_0_20px_rgba(79,70,229,0.1)] sm:rounded-lg border border-gray-800 p-8">
+                class="bg-white dark:bg-[#1a1b26] overflow-hidden shadow-lg dark:shadow-[0_0_20px_rgba(79,70,229,0.1)] sm:rounded-lg border border-gray-200 dark:border-gray-800 p-8 transition-colors duration-300">
 
-                <div class="text-center mb-8 border-b border-gray-700 pb-6">
-                    <h2 class="text-2xl font-black text-white brand-font tracking-wider">COMPLETE <span
-                            class="text-indigo-500">PAYMENT</span></h2>
-                    <p class="text-gray-400 mt-2 text-xs uppercase tracking-widest">Total Amount</p>
+                <div class="text-center mb-8 border-b border-gray-200 dark:border-gray-700 pb-6">
+                    <h2 class="text-2xl font-black text-gray-900 dark:text-white brand-font tracking-wider">COMPLETE
+                        <span class="text-indigo-600 dark:text-indigo-500">PAYMENT</span></h2>
+                    <p class="text-gray-500 dark:text-gray-400 mt-2 text-xs uppercase tracking-widest">Total Amount</p>
                     <p
-                        class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400 mt-2 brand-font">
+                        class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-cyan-500 dark:from-indigo-400 dark:to-cyan-400 mt-2 brand-font">
                         Rp {{ number_format($order->total_price) }}
                     </p>
 
                     <div class="mt-4 flex justify-center">
                         <span
-                            class="inline-flex items-center gap-2 bg-indigo-900/30 text-indigo-300 text-xs px-4 py-1.5 rounded border border-indigo-500/30 uppercase font-bold tracking-wide">
+                            class="inline-flex items-center gap-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-xs px-4 py-1.5 rounded border border-indigo-200 dark:border-indigo-500/30 uppercase font-bold tracking-wide">
                             Current Method:
                             @if($order->payment_method == 'qris')
                                 QRIS
@@ -38,10 +38,11 @@
 
                     @if($order->payment_method == 'qris')
                         <div class="text-center">
-                            <p class="mb-6 font-bold text-gray-300 text-sm uppercase tracking-wide">Scan QR Code Below</p>
+                            <p class="mb-6 font-bold text-gray-500 dark:text-gray-300 text-sm uppercase tracking-wide">Scan
+                                QR Code Below</p>
 
                             <div
-                                class="bg-white p-4 rounded-lg inline-block shadow-[0_0_20px_rgba(255,255,255,0.1)] border-4 border-indigo-500 relative group">
+                                class="bg-white p-4 rounded-lg inline-block shadow-md dark:shadow-[0_0_20px_rgba(255,255,255,0.1)] border-4 border-indigo-500 relative group">
                                 <div
                                     class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-1000">
                                 </div>
@@ -51,56 +52,58 @@
 
                             <div class="mt-6 space-y-3">
                                 <div
-                                    class="text-xs text-gray-500 font-mono bg-black/30 py-2 px-4 rounded inline-block border border-gray-700">
+                                    class="text-xs text-gray-600 dark:text-gray-500 font-mono bg-gray-100 dark:bg-black/30 py-2 px-4 rounded inline-block border border-gray-300 dark:border-gray-700">
                                     NMID: ID{{ rand(100000000, 999999999) }}
                                 </div>
-                                <p class="text-xs text-gray-400 max-w-xs mx-auto">Open any E-Wallet app (GoPay, OVO, Dana,
-                                    ShopeePay) and scan the code above.</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 max-w-xs mx-auto">Open any E-Wallet app
+                                    (GoPay, OVO, Dana, ShopeePay) and scan the code above.</p>
                             </div>
                         </div>
 
                     @else
                         <div class="text-center mb-8">
                             <div
-                                class="w-20 h-20 mx-auto bg-[#0f1016] border border-gray-700 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                                class="w-20 h-20 mx-auto bg-white dark:bg-[#0f1016] border border-gray-200 dark:border-gray-700 rounded-full flex items-center justify-center mb-4 shadow-lg p-2">
                                 @if($order->payment_method == 'gopay')
-                                    <img src="https://pbs.twimg.com/profile_images/1841317083633823744/UTMJokUt_400x400.jpg"
-                                        class="w-20 rounded-full ">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gopay_logo.svg/2560px-Gopay_logo.svg.png"
+                                        class="w-full h-full object-contain">
                                 @elseif($order->payment_method == 'dana')
-                                    <img src="https://downloadr2.apkmirror.com/wp-content/uploads/2023/02/41/63ecca00b12e5.png"
-                                        class="w-20 rounded-full">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/2560px-Logo_dana_blue.svg.png"
+                                        class="w-full h-full object-contain">
                                 @endif
                             </div>
 
-                            <h3 class="font-bold text-white text-lg brand-font">LOGIN TO
+                            <h3 class="font-bold text-gray-900 dark:text-white text-lg brand-font">LOGIN TO
                                 {{ strtoupper($order->payment_method) }}</h3>
                             <p class="text-xs text-gray-500 mt-1">Enter your phone number and PIN to confirm payment.</p>
                         </div>
 
                         <div class="space-y-5 px-2">
                             <div>
-                                <label class="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Phone
+                                <label
+                                    class="block text-xs font-bold text-gray-500 dark:text-gray-500 mb-1 uppercase tracking-wider">Phone
                                     Number</label>
                                 <input type="text" id="dummy_phone" placeholder="08xxxxxxxxxx"
-                                    class="w-full bg-[#0f1016] border border-gray-700 text-white rounded p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder-gray-600 transition font-mono">
+                                    class="w-full bg-gray-50 dark:bg-[#0f1016] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder-gray-400 dark:placeholder-gray-600 transition font-mono">
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">PIN (6
-                                    Digit)</label>
+                                <label
+                                    class="block text-xs font-bold text-gray-500 dark:text-gray-500 mb-1 uppercase tracking-wider">PIN
+                                    (6 Digit)</label>
                                 <input type="password" id="dummy_pin" placeholder="••••••" maxlength="6"
-                                    class="w-full bg-[#0f1016] border border-gray-700 text-white rounded p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder-gray-600 transition tracking-[0.5em] text-center font-bold">
+                                    class="w-full bg-gray-50 dark:bg-[#0f1016] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder-gray-400 dark:placeholder-gray-600 transition tracking-[0.5em] text-center font-bold">
                             </div>
                         </div>
                     @endif
 
                 </div>
 
-                <div class="space-y-4 pt-6 border-t border-gray-700">
+                <div class="space-y-4 pt-6 border-t border-gray-200 dark:border-gray-700">
 
                     <form action="{{ route('payment.success', $order->id) }}" method="POST" id="payment-form">
                         @csrf
                         <button type="button" onclick="validatePayment()"
-                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-4 rounded-sm skew-x-[-5deg] transition shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.6)] flex justify-center items-center gap-2 group">
+                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-4 rounded-sm skew-x-[-5deg] transition shadow-lg hover:shadow-xl flex justify-center items-center gap-2 group">
                             <span class="skew-x-[5deg] tracking-wide flex items-center gap-2">
                                 CONFIRM PAYMENT
                                 <svg xmlns="http://www.w3.org/2000/svg"
@@ -113,7 +116,7 @@
                         </button>
                     </form>
 
-                    <div class="mt-6 pt-4 border-t border-gray-800">
+                    <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-800">
                         <p class="text-center text-gray-500 text-xs font-bold mb-3 uppercase tracking-wider">Change
                             Payment Method</p>
 
@@ -122,10 +125,11 @@
                                 @csrf @method('PATCH')
                                 <input type="hidden" name="payment_method" value="qris">
                                 <button type="submit"
-                                    class="px-3 py-2 rounded bg-[#0f1016] border {{ $order->payment_method == 'qris' ? 'border-indigo-500 text-indigo-400' : 'border-gray-700 text-gray-500 hover:border-gray-500 hover:text-gray-300' }} transition text-xs font-bold flex items-center gap-2"
+                                    class="px-3 py-2 rounded bg-gray-100 dark:bg-[#0f1016] border {{ $order->payment_method == 'qris' ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'border-gray-300 dark:border-gray-700 text-gray-500 hover:border-gray-400 dark:hover:border-gray-500 hover:text-gray-700 dark:hover:text-gray-300' }} transition text-xs font-bold flex items-center gap-2"
                                     {{ $order->payment_method == 'qris' ? 'disabled' : '' }}>
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/1200px-Logo_QRIS.svg.png"
-                                        class="h-3 bg-white px-0.5 rounded">
+                                    <div class="bg-white px-1 rounded h-4 flex items-center"><img
+                                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/1200px-Logo_QRIS.svg.png"
+                                            class="h-full"></div>
                                     QRIS
                                 </button>
                             </form>
@@ -134,10 +138,11 @@
                                 @csrf @method('PATCH')
                                 <input type="hidden" name="payment_method" value="gopay">
                                 <button type="submit"
-                                    class="px-3 py-2 rounded bg-[#0f1016] border {{ $order->payment_method == 'gopay' ? 'border-green-500 text-green-400' : 'border-gray-700 text-gray-500 hover:border-gray-500 hover:text-gray-300' }} transition text-xs font-bold flex items-center gap-2"
+                                    class="px-3 py-2 rounded bg-gray-100 dark:bg-[#0f1016] border {{ $order->payment_method == 'gopay' ? 'border-green-500 text-green-600 dark:text-green-400' : 'border-gray-300 dark:border-gray-700 text-gray-500 hover:border-gray-400 dark:hover:border-gray-500 hover:text-gray-700 dark:hover:text-gray-300' }} transition text-xs font-bold flex items-center gap-2"
                                     {{ $order->payment_method == 'gopay' ? 'disabled' : '' }}>
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gopay_logo.svg/2560px-Gopay_logo.svg.png"
-                                        class="h-3">
+                                    <div class="bg-white px-1 rounded h-4 flex items-center"><img
+                                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gopay_logo.svg/2560px-Gopay_logo.svg.png"
+                                            class="h-full"></div>
                                     GoPay
                                 </button>
                             </form>
@@ -146,10 +151,11 @@
                                 @csrf @method('PATCH')
                                 <input type="hidden" name="payment_method" value="dana">
                                 <button type="submit"
-                                    class="px-3 py-2 rounded bg-[#0f1016] border {{ $order->payment_method == 'dana' ? 'border-blue-500 text-blue-400' : 'border-gray-700 text-gray-500 hover:border-gray-500 hover:text-gray-300' }} transition text-xs font-bold flex items-center gap-2"
+                                    class="px-3 py-2 rounded bg-gray-100 dark:bg-[#0f1016] border {{ $order->payment_method == 'dana' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-gray-300 dark:border-gray-700 text-gray-500 hover:border-gray-400 dark:hover:border-gray-500 hover:text-gray-700 dark:hover:text-gray-300' }} transition text-xs font-bold flex items-center gap-2"
                                     {{ $order->payment_method == 'dana' ? 'disabled' : '' }}>
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/2560px-Logo_dana_blue.svg.png"
-                                        class="h-3">
+                                    <div class="bg-white px-1 rounded h-4 flex items-center"><img
+                                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/2560px-Logo_dana_blue.svg.png"
+                                            class="h-full"></div>
                                     Dana
                                 </button>
                             </form>
@@ -157,8 +163,8 @@
                     </div>
                     <div class="text-center mt-4">
                         <a href="{{ route('orders.index') }}"
-                            class="text-xs text-gray-500 hover:text-gray-300 transition underline">Pay Later / Back to
-                            History</a>
+                            class="text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition underline">Pay
+                            Later / Back to History</a>
                     </div>
                 </div>
 
