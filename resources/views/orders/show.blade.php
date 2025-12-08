@@ -36,22 +36,13 @@
                         
                         <div class="flex items-center gap-5 w-full md:w-1/2 mb-6 md:mb-0">
                             @php
-                                $imageSrc = null;
-                                if ($item->product->image) {
-                                    if (str_starts_with($item->product->image, 'http')) {
-                                        $imageSrc = $item->product->image;
-                                    } else {
-                                        $imageSrc = asset('storage/' . $item->product->image);
-                                    }
-                                }
+                                // Jika kolom image kosong, pakai placeholder
+                                // Jika tidak kosong, langsung pakai isinya (karena sudah berupa URL Cloudinary)
+                                $imageSrc = $item->product->image ? $item->product->image : 'https://placehold.co/600x400?text=No+Image';
                             @endphp
 
                             <div class="relative w-20 h-20 rounded-md overflow-hidden bg-gray-200 dark:bg-gray-800 flex-shrink-0 border border-gray-300 dark:border-gray-700 shadow-md">
-                                @if($imageSrc)
-                                    <img src="{{ $imageSrc }}" class="w-full h-full object-cover">
-                                @else
-                                    <div class="w-full h-full flex items-center justify-center text-xs text-gray-500 dark:text-gray-500 font-bold">NO IMG</div>
-                                @endif
+                                <img src="{{ $imageSrc }}" class="w-full h-full object-cover">
                             </div>
                             
                             <div>

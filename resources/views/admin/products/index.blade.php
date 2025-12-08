@@ -99,21 +99,12 @@
                                         <td class="px-6 py-4">
                                             <div class="flex items-center gap-4">
                                                 @php
-                                                    $imageSrc = null;
-                                                    if ($product->image) {
-                                                        if (str_starts_with($product->image, 'http')) {
-                                                            $imageSrc = $product->image;
-                                                        } else {
-                                                            $imageSrc = asset('storage/' . $product->image);
-                                                        }
-                                                    }
+                                                    // Jika kolom image kosong, pakai placeholder
+                                                    // Jika tidak kosong, langsung pakai isinya (karena sudah berupa URL Cloudinary)
+                                                    $imageSrc = $product->image ? $product->image : 'https://placehold.co/600x400?text=No+Image';
                                                 @endphp
                                                 <div class="w-12 h-12 rounded overflow-hidden bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 flex-shrink-0 group-hover:border-indigo-500 transition">
-                                                    @if($imageSrc)
-                                                        <img src="{{ $imageSrc }}" class="w-full h-full object-cover">
-                                                    @else
-                                                        <div class="w-full h-full flex items-center justify-center text-[8px] text-gray-400 dark:text-gray-500">NO IMG</div>
-                                                    @endif
+                                                    <img src="{{ $imageSrc }}" class="w-full h-full object-cover">
                                                 </div>
                                                 <div>
                                                     <div class="font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition">{{ $product->name }}</div>

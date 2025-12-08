@@ -103,7 +103,9 @@
                                     <div
                                         class="mb-6 flex items-center gap-4 bg-white dark:bg-[#1a1b26] p-3 rounded border border-gray-200 dark:border-gray-700 w-fit">
                                         @php
-                                            $imageSrc = str_starts_with($product->image, 'http') ? $product->image : asset('storage/' . $product->image);
+                                            // Jika kolom image kosong, pakai placeholder
+                                            // Jika tidak kosong, langsung pakai isinya (karena sudah berupa URL Cloudinary)
+                                            $imageSrc = $product->image ? $product->image : 'https://placehold.co/600x400?text=No+Image';
                                         @endphp
                                         <img src="{{ $imageSrc }}"
                                             class="h-16 w-16 object-cover rounded border border-gray-300 dark:border-gray-600">
@@ -125,20 +127,19 @@
                                             New File</label>
                                         <input type="file" name="image"
                                             class="block w-full text-sm text-gray-500 dark:text-gray-400
-                                                    file:mr-4 file:py-2 file:px-4
-                                                    file:rounded-sm file:border-0
-                                                    file:text-xs file:font-semibold
-                                                    file:bg-indigo-600 file:text-white
-                                                    hover:file:bg-indigo-700
-                                                    cursor-pointer bg-white dark:bg-[#1a1b26] border border-gray-300 dark:border-gray-700 rounded p-1">
+                                                            file:mr-4 file:py-2 file:px-4
+                                                            file:rounded-sm file:border-0
+                                                            file:text-xs file:font-semibold
+                                                            file:bg-indigo-600 file:text-white
+                                                            hover:file:bg-indigo-700
+                                                            cursor-pointer bg-white dark:bg-[#1a1b26] border border-gray-300 dark:border-gray-700 rounded p-1">
                                     </div>
                                     <div>
                                         <label
                                             class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase mb-2 block">Option
                                             2: New
                                             Image URL</label>
-                                        <input type="url" name="image_url"
-                                            value="{{ str_starts_with($product->image, 'http') ? $product->image : '' }}"
+                                        <input type="url" name="image_url" value="{{ $product->image ?? '' }}"
                                             class="w-full bg-white dark:bg-[#1a1b26] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded p-2 text-sm focus:outline-none focus:border-indigo-500 placeholder-gray-400 dark:placeholder-gray-600"
                                             placeholder="https://example.com/image.jpg">
                                     </div>

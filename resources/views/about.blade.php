@@ -126,18 +126,13 @@
 
                                 <div class="relative h-56 w-full overflow-hidden bg-gray-100 dark:bg-gray-900">
                                     @php
-                                        $imageSrc = ($product->image && str_starts_with($product->image, 'http')) ? $product->image : asset('storage/' . $product->image);
+                                        // Jika kolom image kosong, pakai placeholder
+                                        // Jika tidak kosong, langsung pakai isinya (karena sudah berupa URL Cloudinary)
+                                        $imageSrc = $product->image ? $product->image : 'https://placehold.co/600x400?text=No+Image';
                                     @endphp
-                                    @if($product->image)
-                                        <img src="{{ $imageSrc }}"
-                                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                            onerror="this.onerror=null; this.src='https://placehold.co/600x800/1a1b26/FFF?text=No+Image';">
-                                    @else
-                                        <div
-                                            class="w-full h-full flex flex-col items-center justify-center text-gray-400 dark:text-gray-600 bg-gray-200 dark:bg-[#15161c]">
-                                            <span class="text-xs font-bold">NO PREVIEW</span>
-                                        </div>
-                                    @endif
+                                    <img src="{{ $imageSrc }}"
+                                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                        onerror="this.onerror=null; this.src='https://placehold.co/600x800/1a1b26/FFF?text=No+Image';">
 
                                     <div class="absolute top-3 left-3">
                                         <span
@@ -200,18 +195,13 @@
 
                                 <div class="relative h-56 w-full overflow-hidden bg-gray-100 dark:bg-gray-900">
                                     @php
-                                        $imageSrc = ($product->image && str_starts_with($product->image, 'http')) ? $product->image : asset('storage/' . $product->image);
+                                        // Jika kolom image kosong, pakai placeholder
+                                        // Jika tidak kosong, langsung pakai isinya (karena sudah berupa URL Cloudinary)
+                                        $imageSrc = $product->image ? $product->image : 'https://placehold.co/600x400?text=No+Image';
                                     @endphp
-                                    @if($product->image)
-                                        <img src="{{ $imageSrc }}"
-                                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                            onerror="this.onerror=null; this.src='https://placehold.co/600x800/1a1b26/FFF?text=No+Image';">
-                                    @else
-                                        <div
-                                            class="w-full h-full flex flex-col items-center justify-center text-gray-400 dark:text-gray-600 bg-gray-200 dark:bg-[#15161c]">
-                                            <span class="text-xs font-bold">NO PREVIEW</span>
-                                        </div>
-                                    @endif
+                                    <img src="{{ $imageSrc }}"
+                                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                        onerror="this.onerror=null; this.src='https://placehold.co/600x800/1a1b26/FFF?text=No+Image';">
 
                                     <div class="absolute top-3 left-3">
                                         <span

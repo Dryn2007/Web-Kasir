@@ -32,9 +32,12 @@
                                     
                                     <div class="w-full md:w-1/4 border-b md:border-b-0 md:border-r border-gray-200 dark:border-gray-800 pb-4 md:pb-0 md:pr-4">
                                         <div class="flex items-center gap-3 mb-2">
-                                            @if($review->product->image)
-                                                <img src="{{ Str::startsWith($review->product->image, 'http') ? $review->product->image : asset('storage/' . $review->product->image) }}" class="w-10 h-10 rounded object-cover border border-gray-300 dark:border-gray-600">
-                                            @endif
+                                            @php
+                                                // Jika kolom image kosong, pakai placeholder
+                                                // Jika tidak kosong, langsung pakai isinya (karena sudah berupa URL Cloudinary)
+                                                $reviewImageSrc = $review->product->image ? $review->product->image : 'https://placehold.co/600x400?text=No+Image';
+                                            @endphp
+                                            <img src="{{ $reviewImageSrc }}" class="w-10 h-10 rounded object-cover border border-gray-300 dark:border-gray-600">
                                             <div>
                                                 <div class="text-gray-900 dark:text-white font-bold text-sm line-clamp-1">{{ $review->product->name }}</div>
                                                 <div class="text-indigo-600 dark:text-indigo-400 text-xs">by {{ $review->user->name }}</div>

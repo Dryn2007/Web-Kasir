@@ -67,25 +67,16 @@
                                 if ($isOutOfStock) $checkoutDisabled = true;
 
                                 // Logic Gambar
-                                $imageSrc = null;
-                                if ($cart->product->image) {
-                                    if (str_starts_with($cart->product->image, 'http')) {
-                                        $imageSrc = $cart->product->image;
-                                    } else {
-                                        $imageSrc = asset('storage/' . $cart->product->image);
-                                    }
-                                }
+                                // Jika kolom image kosong, pakai placeholder
+                                // Jika tidak kosong, langsung pakai isinya (karena sudah berupa URL Cloudinary)
+                                $imageSrc = $cart->product->image ? $cart->product->image : 'https://placehold.co/600x400?text=No+Image';
                             @endphp
 
                             <div class="bg-gray-50 dark:bg-[#0f1016] rounded-lg p-4 border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 transition group flex flex-col md:grid md:grid-cols-12 gap-4 items-center">
                                 
                                 <div class="col-span-6 w-full flex items-center gap-4">
                                     <div class="w-16 h-16 flex-shrink-0 bg-gray-200 dark:bg-gray-900 rounded overflow-hidden border border-gray-300 dark:border-gray-700">
-                                        @if($imageSrc)
-                                            <img src="{{ $imageSrc }}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/100x100/1a1b26/FFF?text=IMG';">
-                                        @else
-                                            <div class="w-full h-full flex items-center justify-center text-[10px] text-gray-500 font-bold">NO IMG</div>
-                                        @endif
+                                        <img src="{{ $imageSrc }}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/100x100/1a1b26/FFF?text=IMG';">
                                     </div>
                                     <div>
                                         <h4 class="font-bold text-gray-900 dark:text-white text-lg brand-font {{ $isOutOfStock ? 'text-red-500 line-through' : '' }}">

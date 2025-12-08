@@ -75,22 +75,13 @@
                                         @foreach($order->items as $item)
                                             <div class="flex items-center gap-4 bg-gray-50 dark:bg-[#0f1016] p-3 rounded-lg border border-gray-200 dark:border-gray-800 transition-colors duration-300">
                                                 @php
-                                                    $imageSrc = null;
-                                                    if ($item->product->image) {
-                                                        if (str_starts_with($item->product->image, 'http')) {
-                                                            $imageSrc = $item->product->image;
-                                                        } else {
-                                                            $imageSrc = asset('storage/' . $item->product->image);
-                                                        }
-                                                    }
+                                                    // Jika kolom image kosong, pakai placeholder
+                                                    // Jika tidak kosong, langsung pakai isinya (karena sudah berupa URL Cloudinary)
+                                                    $imageSrc = $item->product->image ? $item->product->image : 'https://placehold.co/600x400?text=No+Image';
                                                 @endphp
 
                                                 <div class="relative w-16 h-16 flex-shrink-0 rounded overflow-hidden bg-gray-200 dark:bg-gray-900 border border-gray-300 dark:border-gray-700">
-                                                    @if($imageSrc)
-                                                        <img src="{{ $imageSrc }}" class="w-full h-full object-cover">
-                                                    @else
-                                                        <div class="w-full h-full flex items-center justify-center text-[10px] text-gray-500 font-bold">NO IMG</div>
-                                                    @endif
+                                                    <img src="{{ $imageSrc }}" class="w-full h-full object-cover">
                                                 </div>
 
                                                 <div>

@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use App\Models\Category; // Pastikan import ini ada
+use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+// use Illuminate\Support\Facades\Storage; // No longer needed for local storage
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary; // Import Cloudinary
 
 class ProductController extends Controller
 {
@@ -27,7 +28,7 @@ class ProductController extends Controller
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        // 3. LOGIKA FILTER KATEGORI (PENTING: Agar dropdown filter di Admin berfungsi)
+        // 3. LOGIKA FILTER KATEGORI
         if ($request->has('category_id') && $request->category_id != '') {
             $query->where('category_id', $request->category_id);
         }
@@ -61,14 +62,12 @@ class ProductController extends Controller
             $query->latest();
         }
 
-        // 5. Secondary Sort (Agar urutan stabil)
+        // 5. Secondary Sort
         if ($request->sort !== 'latest') {
             $query->orderBy('created_at', 'desc');
         }
 
         $products = $query->paginate(10)->appends($request->all());
-
-        // AMBIL SEMUA KATEGORI (PENTING: Untuk dropdown filter di halaman index admin)
         $categories = Category::all();
 
         return view('admin.products.index', compact('products', 'categories'));
@@ -84,15 +83,14 @@ class ProductController extends Controller
     // Menyimpan data ke database
     public function store(Request $request)
     {
-        // Build validation rules based on feature flags
+        // Build validation rules
         $rules = [
             'name' => 'required',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|image|max:2048', // Validasi file image
             'image_url' => 'nullable|url',
         ];
 
-        // Conditional validation based on feature flags
         if (config('features.product_management.set_price')) {
             $rules['price'] = 'required|numeric';
         }
@@ -108,7 +106,7 @@ class ProductController extends Controller
 
         $request->validate($rules);
 
-        // Build data array with defaults for disabled features
+        // Build data array
         $data = [
             'name' => $request->name,
             'description' => $request->description,
@@ -118,10 +116,15 @@ class ProductController extends Controller
             'category_id' => config('features.product_management.assign_category') ? $request->category_id : null,
         ];
 
-        // Handle image upload
+        // --- CLOUDINARY UPLOAD LOGIC ---
         if (config('features.product_management.upload_image')) {
             if ($request->hasFile('image')) {
-                $data['image'] = $request->file('image')->store('products', 'public');
+                // Upload ke Cloudinary folder 'products'
+                $uploadedFileUrl = Cloudinary::upload($request->file('image')->getRealPath(), [
+                    'folder' => 'products',
+                ])->getSecurePath();
+                
+                $data['image'] = $uploadedFileUrl; // Simpan URL Cloudinary
             } elseif ($request->filled('image_url')) {
                 $data['image'] = $request->image_url;
             }
@@ -142,7 +145,6 @@ class ProductController extends Controller
     // Update data ke database
     public function update(Request $request, Product $product)
     {
-        // Build validation rules based on feature flags
         $rules = [
             'name' => 'required',
             'description' => 'nullable|string',
@@ -150,7 +152,6 @@ class ProductController extends Controller
             'image_url' => 'nullable|url',
         ];
 
-        // Conditional validation based on feature flags
         if (config('features.product_management.set_price')) {
             $rules['price'] = 'required|numeric';
         }
@@ -166,7 +167,6 @@ class ProductController extends Controller
 
         $request->validate($rules);
 
-        // Build data array - keep existing values for disabled features
         $data = [
             'name' => $request->name,
             'description' => $request->description,
@@ -176,17 +176,19 @@ class ProductController extends Controller
             'category_id' => config('features.product_management.assign_category') ? $request->category_id : $product->category_id,
         ];
 
-        // Handle image upload
+        // --- CLOUDINARY UPDATE LOGIC ---
         if (config('features.product_management.upload_image')) {
             if ($request->hasFile('image')) {
-                if ($product->image && !str_starts_with($product->image, 'http')) {
-                    Storage::disk('public')->delete($product->image);
-                }
-                $data['image'] = $request->file('image')->store('products', 'public');
+                // Hapus gambar lama jika ada (Opsional, perlu logic ekstrak public_id)
+                // Cloudinary::destroy($public_id); 
+
+                // Upload gambar baru
+                $uploadedFileUrl = Cloudinary::upload($request->file('image')->getRealPath(), [
+                    'folder' => 'products',
+                ])->getSecurePath();
+
+                $data['image'] = $uploadedFileUrl;
             } elseif ($request->filled('image_url')) {
-                if ($product->image && !str_starts_with($product->image, 'http')) {
-                    Storage::disk('public')->delete($product->image);
-                }
                 $data['image'] = $request->image_url;
             }
         }
@@ -199,9 +201,10 @@ class ProductController extends Controller
     // Hapus data
     public function destroy(Product $product)
     {
-        if ($product->image && !str_starts_with($product->image, 'http')) {
-            Storage::disk('public')->delete($product->image);
-        }
+        // Jika ingin menghapus file di Cloudinary saat produk dihapus, 
+        // Anda perlu menyimpan 'public_id' Cloudinary di database juga.
+        // Untuk sekarang kita hanya hapus data di DB.
+        
         $product->delete();
 
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil dihapus');

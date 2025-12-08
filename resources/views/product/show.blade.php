@@ -27,30 +27,14 @@
                                 <div
                                     class="h-96 bg-gray-100 dark:bg-gray-900 rounded-lg overflow-hidden flex items-center justify-center border border-gray-200 dark:border-gray-700 relative group">
                                     @php
-                                        $imageSrc = null;
-                                        if ($product->image) {
-                                            if (str_starts_with($product->image, 'http')) {
-                                                $imageSrc = $product->image;
-                                            } else {
-                                                $imageSrc = asset('storage/' . $product->image);
-                                            }
-                                        }
+                                        // Jika kolom image kosong, pakai placeholder
+                                        // Jika tidak kosong, langsung pakai isinya (karena sudah berupa URL Cloudinary)
+                                        $imageSrc = $product->image ? $product->image : 'https://placehold.co/600x400?text=No+Image';
                                     @endphp
 
-                                    @if($imageSrc)
-                                        <img src="{{ $imageSrc }}" alt="{{ $product->name }}"
-                                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                            onerror="this.onerror=null; this.src='https://placehold.co/600x400/1a1b26/FFF?text=No+Image';">
-                                    @else
-                                        <div class="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2 opacity-50" fill="none"
-                                                viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                            <span class="text-sm font-bold tracking-wider">NO IMAGE</span>
-                                        </div>
-                                    @endif
+                                    <img src="{{ $imageSrc }}" alt="{{ $product->name }}"
+                                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                        onerror="this.onerror=null; this.src='https://placehold.co/600x400/1a1b26/FFF?text=No+Image';">
 
                                     @if($product->stock <= 0)
                                         <div
