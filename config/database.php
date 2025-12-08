@@ -58,9 +58,17 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            // 'options' => extension_loaded('pdo_mysql') ? array_filter([
+            //     PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            // ]) : [],
+
+            'options' => [
+                // Kita gunakan base_path() agar Windows tidak bingung baca lokasi file
+                PDO::MYSQL_ATTR_SSL_CA => base_path('cacert.pem'),
+
+                // Ini kuncinya: Matikan verifikasi sertifikat (tetap pakai SSL, tapi tidak dicek ketat)
+                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
+            ],
         ],
 
         'mariadb' => [
